@@ -67,7 +67,11 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-  <Target Name="PackagePlugin" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">
-    <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" MakeZip="true" Exclude="$(AssemblyName).pdb" />
+  <Target Name="PackagePlugin" AfterTargets="Build">
+    <DalamudPackager
+            ProjectDir="$(ProjectDir)"
+            OutputPath="$(OutputPath)"
+            AssemblyName="$(AssemblyName)"
+    />
   </Target>
 </Project>
