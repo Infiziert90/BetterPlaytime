@@ -7,6 +7,7 @@
     <Version>0.0.1.0</Version>
     <Description>XXX</Description>
     <PackageProjectUrl>https://github.com/Infiziert90/BetterPlaytime</PackageProjectUrl>
+    <IconUrl>https://raw.githubusercontent.com/Infiziert90/BetterPlaytime/main/BetterPlaytime/images/icon.png</IconUrl>
   </PropertyGroup>
 
   <PropertyGroup>
