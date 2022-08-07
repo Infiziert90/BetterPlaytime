@@ -3,9 +3,13 @@
   <PropertyGroup>
     <Authors>Infi</Authors>
     <AssemblyName>BetterPlaytime</AssemblyName>
-    <AssemblyVersion>0.0.1.0</AssemblyVersion>
-    <Version>0.0.1.0</Version>
-    <Description>XXX</Description>
+    <AssemblyVersion>0.0.2.0</AssemblyVersion>
+    <Version>0.0.2.0</Version>
+    <Description>Provides expanded functionality to seamlessly track total playtime.
+      Requires only using /playtime once on each character (again to refresh the time),
+
+      - Supports multiple characters,
+      - Customisable output formats such as hours or minutes</Description>
     <PackageProjectUrl>https://github.com/Infiziert90/BetterPlaytime</PackageProjectUrl>
     <IconUrl>https://raw.githubusercontent.com/Infiziert90/BetterPlaytime/main/BetterPlaytime/images/icon.png</IconUrl>
   </PropertyGroup>
