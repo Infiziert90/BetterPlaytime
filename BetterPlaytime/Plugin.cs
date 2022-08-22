@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -11,6 +10,7 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game;
 using BetterPlaytime.Attributes;
 using BetterPlaytime.Data;
+using BetterPlaytime.Logic;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Logging;
@@ -32,9 +32,6 @@ namespace BetterPlaytime
         private ClientState clientState;
         
         private readonly PluginCommandManager<Plugin> commandManager;
-
-        private Regex reg =
-            new Regex(@"^Total Play Time:(?: (?<days>\d+) days?,)?(?: (?<hours>\d+) hours?,)? (?<minutes>\d+) minutes?");
         
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -129,7 +126,7 @@ namespace BetterPlaytime
             var xivChatType = (ushort) type;
             if (xivChatType != 57) return;
 
-            var m = reg.Match(message.ToString());
+            var m = Reg.Match(message.ToString(), clientState.ClientLanguage);
             if (!m.Success) return;
             
             var playerName = GetLocalPlayerName();
