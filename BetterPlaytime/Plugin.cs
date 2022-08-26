@@ -27,8 +27,9 @@ namespace BetterPlaytime
         public string Name => "BetterPlaytime";
         
         private DalamudPluginInterface PluginInterface { get; init; }
-        private Configuration Configuration { get; set; }
+        public Configuration Configuration { get; set; }
         private PluginUI PluginUi { get; init; }
+        private TimeManager TimeManager { get; init; }
         private ClientState clientState;
         
         private readonly PluginCommandManager<Plugin> commandManager;
@@ -38,19 +39,24 @@ namespace BetterPlaytime
             [RequiredVersion("1.0")] CommandManager commands,
             [RequiredVersion("1.0")] ClientState clientState)
         {
-            this.PluginInterface = pluginInterface;
+            PluginInterface = pluginInterface;
             this.clientState = clientState;
             
-            this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            this.Configuration.Initialize(this.PluginInterface);
+            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Configuration.Initialize(PluginInterface);
             
-            this.PluginUi = new PluginUI(this.Configuration);
+            TimeManager = new TimeManager(this);
+            PluginUi = new PluginUI(this, TimeManager);
             
-            this.commandManager = new PluginCommandManager<Plugin>(this, commands);
+            commandManager = new PluginCommandManager<Plugin>(this, commands);
             
             Chat.ChatMessage += OnChatMessage;
             PluginInterface.UiBuilder.Draw += DrawUI;
-            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            clientState.Login += OnLogin;
+            clientState.Logout += OnLogout;
+
+            if (clientState.IsLoggedIn) Framework.Update += TimeTracker;
         }
         
         [Command("/btime")]
@@ -61,65 +67,48 @@ namespace BetterPlaytime
             switch (args)
             {
                 case "config":
-                    this.PluginUi.SettingsVisible = true;
+                    PluginUi.SettingsVisible = true;
                     break;
                 default:
-                    PrintPlaytime();
+                    TimeManager.PrintPlaytime();
                     break;
             }
         }
-
-        private void PrintPlaytime()
+        
+        public void OnLogin(object? sender, EventArgs e)
         {
-            var playerName = GetLocalPlayerName();
-            if (playerName == null) return;
-            
-            ReloadConfig();
-            var currentChar = Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
-            if (currentChar == null)
-            {
-                Chat.Print("Current character has yet to be logged, type /playtime to update.");
-                return;
-            }
-
-            var span = currentChar.PTime;
-            Chat.Print($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}");
-            
-            var sList = Configuration.StoredPlaytimes.OrderByDescending(x => x.PTime).ToList();
-            foreach (var character in sList.Where(character => character.Playername != currentChar.Playername))
-            {
-                Chat.Print($"{character.Playername}: {GeneratePlaytime(character.PTime)}");
-                span += character.PTime;
-            }
-            
-            if (Configuration.StoredPlaytimes.Count > 1)
-                Chat.Print($"Across all characters, you have played for: {GeneratePlaytime(span)}");
+            PluginLog.Debug("Login");
+            Framework.Update += TimeTracker;
         }
         
-        private string GeneratePlaytime(TimeSpan time)
+        public void OnLogout(object? sender, EventArgs e)
         {
-            return Configuration.TimeOption switch
-            {
-                TimeOptions.Normal => GeneratePlaytimeString(time),
-                TimeOptions.Seconds => $"{time.TotalSeconds:n0} seconds",
-                TimeOptions.Minutes => $"{time.TotalMinutes:n0} minutes",
-                TimeOptions.Hours => $"{time.TotalHours:n0} hours",
-                TimeOptions.Days => $"{time.TotalDays:n0} days",
-                _ => GeneratePlaytimeString(time)
-            };
+            PluginLog.Debug("Logout");
+            Framework.Update -= TimeTracker;
+            Framework.Update -= TimeManager.AutoSaveEvent;
+            
+            TimeManager.ShutdownTimers();
+            TimeManager.StopAutoSave();
+            TimeManager.PlayerName = string.Empty;
         }
         
-        private string GeneratePlaytimeString(TimeSpan time)
+        public void TimeTracker(Framework framework)
         {
-            var formatted =
-                $"{(time.Days > 0 ? $"{time.Days:n0} day{(time.Days == 1 ? string.Empty : 's')}, " : string.Empty)}" +
-                $"{(time.Hours > 0 ? $"{time.Hours:n0} hour{(time.Hours == 1 ? string.Empty : 's')}, " : string.Empty)}" +
-                $"{(time.Minutes > 0 ? $"{time.Minutes:n0} minute{(time.Minutes == 1 ? string.Empty : "s")}, " : string.Empty)}";
-            if (formatted.EndsWith(", ")) formatted = formatted[..^2];
+            if (clientState.LocalPlayer == null) return;
+            
+            PluginLog.Debug($"Checking for player name");
+            if (TimeManager.PlayerName != string.Empty) return;
 
-            return formatted;
+            TimeManager.PlayerName = GetLocalPlayerName();
+            PluginLog.Debug($"New Name: {TimeManager.PlayerName}");
+            TimeManager.StartTimer();
+            
+            Framework.Update -= TimeTracker;
+            
+            TimeManager.StartAutoSave();
+            Framework.Update += TimeManager.AutoSaveEvent;
         }
-
+        
         private void OnChatMessage(XivChatType type, uint id, ref SeString sender, ref SeString message, ref bool handled)
         {
             // 57 = sysmsg
@@ -149,6 +138,8 @@ namespace BetterPlaytime
                 
                 Configuration.StoredPlaytimes.Add(new Playtime(playerName, time));
                 Configuration.Save();
+                
+                TimeManager.RestartAutoSave();
             }
             catch (FormatException e)
             {
@@ -170,15 +161,21 @@ namespace BetterPlaytime
         
         public void ReloadConfig()
         {
-            this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            this.Configuration.Initialize(this.PluginInterface);
+            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Configuration.Initialize(PluginInterface);
         }
         
         public void Dispose()
         {
             Chat.ChatMessage -= OnChatMessage;
-            this.PluginUi.Dispose();
-            this.commandManager.Dispose();
+            clientState.Login -= OnLogin;
+            clientState.Logout -= OnLogout;
+            Framework.Update -= TimeTracker;
+            Framework.Update -= TimeManager.AutoSaveEvent;
+            
+            TimeManager.StopAutoSave();
+            PluginUi.Dispose();
+            commandManager.Dispose();
         }
 
         private void DrawUI()
@@ -188,7 +185,7 @@ namespace BetterPlaytime
         
         private void DrawConfigUI()
         {
-            this.PluginUi.SettingsVisible = true;
+            PluginUi.SettingsVisible = true;
         }
     }
 }

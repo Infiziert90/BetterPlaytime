@@ -2,6 +2,7 @@
 using System;
 using System.Numerics;
 using BetterPlaytime.Gui;
+using BetterPlaytime.Logic;
 
 namespace BetterPlaytime
 {
@@ -9,8 +10,8 @@ namespace BetterPlaytime
     // to do any cleanup
     public class PluginUI : IDisposable
     {
-        public Configuration configuration;
         private GeneralSettings GeneralSettings { get; init; }
+        public PlaytimeTracker PlaytimeTracker { get; init; }
 
         private bool settingsVisible = false;
         public bool SettingsVisible
@@ -20,10 +21,10 @@ namespace BetterPlaytime
         }
         
         // passing in the image here just for simplicityw
-        public PluginUI(Configuration configuration)
+        public PluginUI(Plugin plugin, TimeManager timeManager)
         {
-            this.configuration = configuration;
-            this.GeneralSettings = new GeneralSettings(configuration);
+            this.PlaytimeTracker = new PlaytimeTracker(plugin, timeManager);
+            this.GeneralSettings = new GeneralSettings(plugin, PlaytimeTracker);
         }
 
         public void Dispose()
@@ -34,6 +35,7 @@ namespace BetterPlaytime
         public void Draw()
         {
             DrawSettingsWindow();
+            PlaytimeTracker.DrawPlaytimeTrackerWindow();
         }
 
         public void DrawSettingsWindow()
@@ -43,9 +45,9 @@ namespace BetterPlaytime
                 return;
             }
             
-            ImGui.SetNextWindowSize(new Vector2(260, 310), ImGuiCond.Always);
-            if (ImGui.Begin("Better Playtime Config", ref this.settingsVisible,
-                ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoCollapse ))
+            ImGui.SetNextWindowSize(new Vector2(260, 380), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(260, 380), new Vector2(float.MaxValue, float.MaxValue));
+            if (ImGui.Begin("Better Playtime Config", ref this.settingsVisible, ImGuiWindowFlags.NoCollapse ))
             {
 
                 if (ImGui.BeginTabBar("##settings-tabs"))
