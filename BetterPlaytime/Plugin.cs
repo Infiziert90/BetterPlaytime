@@ -61,13 +61,16 @@ namespace BetterPlaytime
         
         [Command("/btime")]
         [Aliases("/betterplaytime")]
-        [HelpMessage("Outputs playtime\nArguments:\nconfig - Opens config")]
+        [HelpMessage("Outputs playtime\nArguments:\nconfig - Opens config\nui - Opens session playtime")]
         public void PluginCommand(string command, string args)
         {
             switch (args)
             {
                 case "config":
                     PluginUi.SettingsVisible = true;
+                    break;
+                case "ui":
+                    PluginUi.PlaytimeTracker.Visible = true;
                     break;
                 default:
                     TimeManager.PrintPlaytime();
