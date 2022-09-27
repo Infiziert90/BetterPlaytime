@@ -38,13 +38,19 @@ public class TimeManager
         
         var span = currentChar.PTime;
         if (plugin.Configuration.StoredPlaytimes.Count == 1 || plugin.Configuration.ShowCurrent)
+        {
             Plugin.Chat.Print($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}"); 
-        
+            PluginLog.Information($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}");
+        }
+
         var sList = plugin.Configuration.StoredPlaytimes.OrderByDescending(x => x.PTime).ToList();
         foreach (var character in sList.Where(character => character.Playername != currentChar.Playername))
         {
             if (plugin.Configuration.ShowAll)
+            {
                 Plugin.Chat.Print($"{character.Playername}: {GeneratePlaytime(character.PTime)}");
+                PluginLog.Information($"{character.Playername}: {GeneratePlaytime(character.PTime)}");
+            }
 
             span += character.PTime;
         } 
@@ -130,6 +136,15 @@ public class TimeManager
         PluginLog.Debug("Saving playtime...");
         playtime.PTime += _autoSaveTime.Elapsed;
         plugin.Configuration.Save();
+    }
+    
+    public string GetCharacterPlaytime()
+    {
+        var playerName = plugin.GetLocalPlayerName();
+        if (playerName == null) return string.Empty;
+        
+        var currentChar = plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
+        return currentChar == null ? string.Empty : new string($"{GeneratePlaytime(currentChar.PTime + _autoSaveTime.Elapsed)}");
     }
     
     public string GetCurrentPlaytime() => GeneratePlaytimeString(_characterPlaytime.Elapsed);

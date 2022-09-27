@@ -23,15 +23,24 @@ public class PlaytimeTracker
     {
         if (!Visible) return;
         
-        ImGui.SetNextWindowSize(new Vector2(260, 85), ImGuiCond.FirstUseEver);
-        ImGui.SetNextWindowSizeConstraints(new Vector2(260, 85), new Vector2(float.MaxValue, float.MaxValue));
-        if (ImGui.Begin("Playtime##playtimeTrackerWindow", ref this.Visible))
+        ImGui.SetNextWindowSize(new Vector2(200, 60), ImGuiCond.FirstUseEver);
+        ImGui.SetNextWindowSizeConstraints(new Vector2(200, 60), new Vector2(float.MaxValue, float.MaxValue));
+        if (ImGui.Begin("Playtime##playtimeTrackerWindow", ref this.Visible, ImGuiWindowFlags.AlwaysAutoResize))
         {
             var character = timeManager.GetCurrentPlaytime();
             var total = timeManager.GetTotalPlaytime();
             if (total != character)
-                ImGui.TextColored(_greenColor, $"Character: {(character != "" ? character : "less than a minute")}");
+                ImGui.TextColored(_greenColor, $"On Character: {(character != "" ? character : "less than a minute")}");
             ImGui.TextColored(_greenColor, $"Total: {(total != "" ? total : "less than a minute")}");
+
+            if (!plugin.Configuration.ShowCharacter) return;
+            
+            var current = timeManager.GetCharacterPlaytime();
+            if (current == string.Empty) return;
+            
+            ImGui.Dummy(new Vector2(0.0f, 5.0f));
+            ImGui.Text("Character Total:");
+            ImGui.TextColored(_greenColor, current);
         }
         ImGui.End();
     }

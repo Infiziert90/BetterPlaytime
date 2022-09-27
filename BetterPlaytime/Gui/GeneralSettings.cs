@@ -94,5 +94,30 @@ public class GeneralSettings
 
             ImGui.EndTabItem();
         }
+        if (ImGui.BeginTabItem($"UI###ui-tab"))
+        {
+            ImGui.Dummy(new Vector2(0,0));
+            
+            var spacing = ImGui.GetScrollMaxY() == 0 ? 100.0f : 120.0f;
+            ImGui.SameLine(ImGui.GetWindowWidth() - spacing);
+        
+            if (ImGui.Button("Show Playtime"))
+            {
+                playtimeTracker.Visible = true;
+            }
+            
+            ImGui.Dummy(new Vector2(0.0f, 5.0f));
+            ImGui.Text("Display Option:");
+
+            var showCharacter = plugin.Configuration.ShowCharacter;
+            if (ImGui.Checkbox("Show current Character", ref showCharacter))
+            {
+                plugin.ReloadConfig();
+                plugin.Configuration.ShowCharacter = showCharacter;
+                plugin.Configuration.Save();
+            }
+            
+            ImGui.EndTabItem();
+        }
     }
 }

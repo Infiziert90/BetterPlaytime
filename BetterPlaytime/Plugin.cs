@@ -138,7 +138,7 @@ namespace BetterPlaytime
                     int.Parse(m.Groups["minutes"].Value),
                     0
                 );
-                
+
                 Configuration.StoredPlaytimes.Add(new Playtime(playerName, time));
                 Configuration.Save();
                 

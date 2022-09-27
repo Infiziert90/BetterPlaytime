@@ -14,6 +14,8 @@ namespace BetterPlaytime
 
         public bool ShowAll = true;
         public bool ShowCurrent = true;
+
+        public bool ShowCharacter = false;
         
         public bool AutoSaveEnabled = true;
         public int AutoSaveAfter = 15;
