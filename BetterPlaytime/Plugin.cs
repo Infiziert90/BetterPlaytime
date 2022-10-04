@@ -1,6 +1,5 @@
 ﻿#nullable enable
 using System;
-using System.Linq;
 using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -10,10 +9,12 @@ using Dalamud.Game.ClientState;
 using Dalamud.Game;
 using BetterPlaytime.Attributes;
 using BetterPlaytime.Data;
+using BetterPlaytime.Gui;
 using BetterPlaytime.Logic;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Logging;
+using Dalamud.Game.Gui.Dtr;
 
 
 namespace BetterPlaytime
@@ -30,14 +31,16 @@ namespace BetterPlaytime
         public Configuration Configuration { get; set; }
         private PluginUI PluginUi { get; init; }
         private TimeManager TimeManager { get; init; }
+        private ServerBar ServerBar { get; init; }
         private ClientState clientState;
-        
+
         private readonly PluginCommandManager<Plugin> commandManager;
         
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commands,
-            [RequiredVersion("1.0")] ClientState clientState)
+            [RequiredVersion("1.0")] ClientState clientState,
+            DtrBar dtrBar)
         {
             PluginInterface = pluginInterface;
             this.clientState = clientState;
@@ -47,6 +50,7 @@ namespace BetterPlaytime
             
             TimeManager = new TimeManager(this);
             PluginUi = new PluginUI(this, TimeManager);
+            ServerBar = new ServerBar(this, TimeManager, dtrBar);
             
             commandManager = new PluginCommandManager<Plugin>(this, commands);
             
@@ -110,6 +114,7 @@ namespace BetterPlaytime
             
             TimeManager.StartAutoSave();
             Framework.Update += TimeManager.AutoSaveEvent;
+            Framework.Update += ServerBar.UpdateTracker;
         }
         
         private void OnChatMessage(XivChatType type, uint id, ref SeString sender, ref SeString message, ref bool handled)
@@ -175,10 +180,12 @@ namespace BetterPlaytime
             clientState.Logout -= OnLogout;
             Framework.Update -= TimeTracker;
             Framework.Update -= TimeManager.AutoSaveEvent;
+            Framework.Update -= ServerBar.UpdateTracker;
             
             TimeManager.StopAutoSave();
             PluginUi.Dispose();
             commandManager.Dispose();
+            ServerBar.Dispose();
         }
 
         private void DrawUI()

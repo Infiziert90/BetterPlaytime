@@ -82,6 +82,17 @@ public class TimeManager
 
         return formatted;
     }
+    
+    public string GenerateServerBarString(TimeSpan time)
+    {
+        var formatted =
+            $"{(time.Days > 0 ? $"{time.Days:n0}:" : string.Empty)}" +
+            $"{(time.Hours > 0 ? $"{time.Hours:00;n0}:" : string.Empty)}" +
+            $"{time.Minutes:00;n0}:" +
+            $"{time.Seconds:00;n0}";
+
+        return formatted;
+    }
 
     public void StartTimer()
     {
@@ -149,6 +160,7 @@ public class TimeManager
     
     public string GetCurrentPlaytime() => GeneratePlaytimeString(_characterPlaytime.Elapsed);
     public string GetTotalPlaytime() => GeneratePlaytimeString(_totalSessionTime.Elapsed);
+    public string GetServerBarPlaytime() => GenerateServerBarString(_totalSessionTime.Elapsed);
 
     public void StartAutoSave() => _autoSaveTime.Start();
     public void RestartAutoSave() => _autoSaveTime.Restart();

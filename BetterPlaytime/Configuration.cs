@@ -12,9 +12,10 @@ namespace BetterPlaytime
         public int Version { get; set; } = 0;
         public TimeOptions TimeOption { get; set; } = TimeOptions.Normal;
 
+        public bool ShowServerBar = false;
+        
         public bool ShowAll = true;
         public bool ShowCurrent = true;
-
         public bool ShowCharacter = false;
         
         public bool AutoSaveEnabled = true;

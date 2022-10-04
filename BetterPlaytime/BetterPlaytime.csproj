@@ -3,8 +3,8 @@
   <PropertyGroup>
     <Authors>Infi</Authors>
     <AssemblyName>BetterPlaytime</AssemblyName>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <Version>1.0.1.0</Version>
+    <AssemblyVersion>1.0.2.0</AssemblyVersion>
+    <Version>1.0.2.0</Version>
     <Description>Provides expanded functionality to seamlessly track total playtime.
       Requires only using /playtime once on each character (again to refresh the time),
 

@@ -68,7 +68,18 @@ public class GeneralSettings
                 plugin.Configuration.ShowAll = all;
                 plugin.Configuration.Save();
             }
-
+            
+            ImGui.Dummy(new Vector2(0.0f, 5.0f));
+            ImGui.Text("Server Bar:");
+            
+            var showServerBar = plugin.Configuration.ShowServerBar;
+            if (ImGui.Checkbox("Enabled", ref showServerBar))
+            {
+                plugin.ReloadConfig();
+                plugin.Configuration.ShowServerBar = showServerBar;
+                plugin.Configuration.Save();
+            }
+            
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
             ImGui.Text("AutoSave:");
             
