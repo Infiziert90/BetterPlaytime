@@ -12,6 +12,7 @@ namespace BetterPlaytime
     {
         private GeneralSettings GeneralSettings { get; init; }
         public PlaytimeTracker PlaytimeTracker { get; init; }
+        public CharacterList CharacterList { get; init; }
 
         private bool settingsVisible = false;
         public bool SettingsVisible
@@ -25,6 +26,7 @@ namespace BetterPlaytime
         {
             this.PlaytimeTracker = new PlaytimeTracker(plugin, timeManager);
             this.GeneralSettings = new GeneralSettings(plugin, PlaytimeTracker);
+            this.CharacterList = new CharacterList(plugin);
         }
 
         public void Dispose()
@@ -54,6 +56,9 @@ namespace BetterPlaytime
                 {
                     // Renders General Settings UI
                     this.GeneralSettings.RenderGeneralSettings();
+                    
+                    // Renders Character Deletion UI
+                    this.CharacterList.RenderCharacterList();
                     
                     ImGui.EndTabBar();
                 }

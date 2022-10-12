@@ -64,6 +64,9 @@ public class ServerBar
     private void UpdateBarString()
     {
         var total = timeManager.GetServerBarPlaytime();
+        if (plugin.Configuration.ServerBarCharacter && timeManager.CheckIfCharacterIsUsed())
+            total = $"{timeManager.GetServerBarCharacter()}/{total}";
+        
         dtrEntry.Text = total;
     }
 

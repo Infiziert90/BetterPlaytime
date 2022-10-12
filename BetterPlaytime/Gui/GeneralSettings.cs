@@ -35,7 +35,7 @@ public class GeneralSettings
             }
             
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
-            ImGui.Text("Display Option:");
+            ImGui.Text("Chat Output:");
             
             var options = (int) plugin.Configuration.TimeOption;
             ImGui.RadioButton("Normal", ref options, 0);
@@ -77,6 +77,14 @@ public class GeneralSettings
             {
                 plugin.ReloadConfig();
                 plugin.Configuration.ShowServerBar = showServerBar;
+                plugin.Configuration.Save();
+            }
+            
+            var serverBarCharacter = plugin.Configuration.ServerBarCharacter;
+            if (ImGui.Checkbox("Time on character", ref serverBarCharacter))
+            {
+                plugin.ReloadConfig();
+                plugin.Configuration.ServerBarCharacter = serverBarCharacter;
                 plugin.Configuration.Save();
             }
             

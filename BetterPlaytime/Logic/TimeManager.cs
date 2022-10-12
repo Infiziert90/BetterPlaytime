@@ -10,11 +10,13 @@ namespace BetterPlaytime.Logic;
 
 public class TimeManager
 {
+    private static readonly TimeSpan Zero = new TimeSpan(0, 0, 0, 0);
+
     private readonly Plugin plugin;
     
     public string PlayerName = string.Empty;
     
-    private Stopwatch _characterPlaytime = new();
+    private TimeSpan _characterPlaytime;
     private Stopwatch? _totalSessionTime;
     private readonly Stopwatch _autoSaveTime = new();
 
@@ -66,8 +68,8 @@ public class TimeManager
             TimeOptions.Normal => GeneratePlaytimeString(time),
             TimeOptions.Seconds => $"{time.TotalSeconds:n0} seconds",
             TimeOptions.Minutes => $"{time.TotalMinutes:n0} minutes",
-            TimeOptions.Hours => $"{time.TotalHours:n0} hours",
-            TimeOptions.Days => $"{time.TotalDays:n0} days",
+            TimeOptions.Hours => $"{time.TotalHours:n2} hours",
+            TimeOptions.Days => $"{time.TotalDays:n2} days",
             _ => GeneratePlaytimeString(time)
         };
     }
@@ -97,10 +99,10 @@ public class TimeManager
     public void StartTimer()
     {
         _totalSessionTime ??= new Stopwatch();
-        _characterPlaytime = new Stopwatch();
+        var elapsed = _totalSessionTime.Elapsed;
+        _characterPlaytime = new TimeSpan(elapsed.Days, elapsed.Hours, elapsed.Minutes, elapsed.Seconds);
         
         _totalSessionTime.Start();
-        _characterPlaytime.Start();
     }
     
     public void ShutdownTimers()
@@ -108,8 +110,7 @@ public class TimeManager
         if (_totalSessionTime == null) return;
         
         _totalSessionTime.Stop();
-        _characterPlaytime.Stop();
-        PluginLog.Debug($"Playtime of {PlayerName}: {_characterPlaytime.Elapsed:hh\\:mm\\:ss}");
+        PluginLog.Debug($"Playtime of {PlayerName}: {CalculateCharacterPlaytime():hh\\:mm\\:ss}");
         PluginLog.Debug($"Full Playtime: {_totalSessionTime.Elapsed:hh\\:mm\\:ss}");
     }
 
@@ -157,10 +158,13 @@ public class TimeManager
         var currentChar = plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
         return currentChar == null ? string.Empty : new string($"{GeneratePlaytime(currentChar.PTime + _autoSaveTime.Elapsed)}");
     }
-    
-    public string GetCurrentPlaytime() => GeneratePlaytimeString(_characterPlaytime.Elapsed);
+
+    public TimeSpan CalculateCharacterPlaytime() => _totalSessionTime.Elapsed.Subtract(_characterPlaytime);
+    public bool CheckIfCharacterIsUsed() => !_characterPlaytime.Equals(Zero);
+    public string GetCurrentPlaytime() => GeneratePlaytimeString(CalculateCharacterPlaytime());
     public string GetTotalPlaytime() => GeneratePlaytimeString(_totalSessionTime.Elapsed);
     public string GetServerBarPlaytime() => GenerateServerBarString(_totalSessionTime.Elapsed);
+    public string GetServerBarCharacter() => GenerateServerBarString(CalculateCharacterPlaytime());
 
     public void StartAutoSave() => _autoSaveTime.Start();
     public void RestartAutoSave() => _autoSaveTime.Restart();

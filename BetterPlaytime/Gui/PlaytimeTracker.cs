@@ -27,10 +27,12 @@ public class PlaytimeTracker
         ImGui.SetNextWindowSizeConstraints(new Vector2(200, 60), new Vector2(float.MaxValue, float.MaxValue));
         if (ImGui.Begin("Playtime##playtimeTrackerWindow", ref this.Visible, ImGuiWindowFlags.AlwaysAutoResize))
         {
-            var character = timeManager.GetCurrentPlaytime();
             var total = timeManager.GetTotalPlaytime();
-            if (total != character)
+            if (timeManager.CheckIfCharacterIsUsed())
+            {
+                var character = timeManager.GetCurrentPlaytime();
                 ImGui.TextColored(_greenColor, $"On Character: {(character != "" ? character : "less than a minute")}");
+            }
             ImGui.TextColored(_greenColor, $"Total: {(total != "" ? total : "less than a minute")}");
 
             if (!plugin.Configuration.ShowCharacter) return;

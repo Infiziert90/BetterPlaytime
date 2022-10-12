@@ -13,6 +13,7 @@ namespace BetterPlaytime
         public TimeOptions TimeOption { get; set; } = TimeOptions.Normal;
 
         public bool ShowServerBar = false;
+        public bool ServerBarCharacter = false;
         
         public bool ShowAll = true;
         public bool ShowCurrent = true;
