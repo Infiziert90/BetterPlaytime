@@ -15,6 +15,7 @@ using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Logging;
 using Dalamud.Game.Gui.Dtr;
+using XivCommon;
 
 
 namespace BetterPlaytime
@@ -33,7 +34,9 @@ namespace BetterPlaytime
         private TimeManager TimeManager { get; init; }
         private ServerBar ServerBar { get; init; }
         private ClientState clientState;
-
+        private static XivCommonBase xivCommon;
+        private bool pluginSendCommand = false;
+        
         private readonly PluginCommandManager<Plugin> commandManager;
         
         public Plugin(
@@ -59,7 +62,9 @@ namespace BetterPlaytime
             PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
             clientState.Login += OnLogin;
             clientState.Logout += OnLogout;
-
+            
+            xivCommon = new XivCommonBase();
+            
             if (clientState.IsLoggedIn) Framework.Update += TimeTracker;
         }
         
@@ -77,7 +82,7 @@ namespace BetterPlaytime
                     PluginUi.PlaytimeTracker.Visible = true;
                     break;
                 default:
-                    TimeManager.PrintPlaytime();
+                    PlaytimeCommand();
                     break;
             }
         }
@@ -97,6 +102,14 @@ namespace BetterPlaytime
             TimeManager.ShutdownTimers();
             TimeManager.StopAutoSave();
             TimeManager.PlayerName = string.Empty;
+        }
+
+        public void PlaytimeCommand()
+        {
+            // send playtime command after user uses btime command
+            PluginLog.Debug($"Requesting playtime from server.");
+            xivCommon.Functions.Chat.SendMessage("/playtime");
+            pluginSendCommand = true;
         }
         
         public void TimeTracker(Framework framework)
@@ -155,11 +168,21 @@ namespace BetterPlaytime
                 PluginLog.Error(e.ToString());
                 PluginLog.Error(message.ToString());
             }
+
+            if (pluginSendCommand)
+            {
+                // plugin requested this message, so don't show it in chat
+                pluginSendCommand = false;
+                handled = true;
+                
+                // continue /btime command
+                TimeManager.PrintPlaytime();
+            }
         }
 
         public string? GetLocalPlayerName()
         {
-            var local = clientState?.LocalPlayer;
+            var local = clientState.LocalPlayer;
             if (local == null || local.HomeWorld.GameData?.Name == null)
             {
                 return null;
@@ -186,6 +209,7 @@ namespace BetterPlaytime
             PluginUi.Dispose();
             commandManager.Dispose();
             ServerBar.Dispose();
+            xivCommon.Dispose();
         }
 
         private void DrawUI()

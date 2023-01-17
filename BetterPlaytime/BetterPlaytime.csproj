@@ -3,10 +3,10 @@
   <PropertyGroup>
     <Authors>Infi</Authors>
     <AssemblyName>BetterPlaytime</AssemblyName>
-    <AssemblyVersion>1.1.0.1</AssemblyVersion>
-    <Version>1.1.0.1</Version>
+    <AssemblyVersion>1.2.0.0</AssemblyVersion>
+    <Version>1.2.0.0</Version>
     <Description>Provides expanded functionality to seamlessly track total playtime.
-      Requires only using /playtime once on each character (again to refresh the time),
+      Use /btime once on each character to add them.
 
       - Supports multiple characters,
       - Customisable output formats such as hours or minutes
@@ -16,6 +16,7 @@
     </Description>
     <PackageProjectUrl>https://github.com/Infiziert90/BetterPlaytime</PackageProjectUrl>
     <IconUrl>https://raw.githubusercontent.com/Infiziert90/BetterPlaytime/main/BetterPlaytime/images/icon.png</IconUrl>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -47,6 +48,7 @@
   <ItemGroup>
     <PackageReference Include="DalamudPackager" Version="2.1.10" />
     <PackageReference Include="ILRepack" Version="2.1.0-beta1" />
+    <PackageReference Include="XivCommon" Version="7.0.0-alpha.1" />
     <Reference Include="FFXIVClientStructs">
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
       <Private>false</Private>

@@ -34,6 +34,7 @@ public class TimeManager
         var currentChar = plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
         if (currentChar == null)
         {
+            // Impossible to reach?
             Plugin.Chat.Print("Current character has yet to be logged, type /playtime to update.");
             return;
         }

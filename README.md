@@ -1,7 +1,7 @@
 # BetterPlaytime
 
 Provides expanded functionality to seamlessly track total playtime.  
-Requires only using /playtime once on each character (again to refresh the time),
+Use /btime once on each character to add them.
 
 + Supports multiple characters,
 + Customisable output formats such as hours or minutes
@@ -11,3 +11,6 @@ Requires only using /playtime once on each character (again to refresh the time)
 
 ## Session Playtime Window
 ![](BetterPlaytime/images/playtime.png)
+
+## Server Bar
+![](BetterPlaytime/images/serverbar.png)
