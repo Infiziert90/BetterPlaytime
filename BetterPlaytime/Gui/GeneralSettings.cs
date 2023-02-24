@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Numerics;
 using BetterPlaytime.Data;
+using CheapLoc;
 using ImGuiNET;
 
 namespace BetterPlaytime.Gui;
@@ -29,20 +31,20 @@ public class GeneralSettings
             var spacing = ImGui.GetScrollMaxY() == 0 ? 100.0f : 120.0f;
             ImGui.SameLine(ImGui.GetWindowWidth() - spacing);
         
-            if (ImGui.Button("Show Playtime"))
+            if (ImGui.Button(Loc.Localize("Config - Button Playtime", "Show Playtime")))
             {
                 playtimeTracker.Visible = true;
             }
             
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
-            ImGui.Text("Chat Output:");
+            ImGui.Text(Loc.Localize("Config - Header Chat", "Chat Output:"));
             
             var options = (int) plugin.Configuration.TimeOption;
-            ImGui.RadioButton("Normal", ref options, 0);
-            ImGui.RadioButton("Seconds", ref options, 1); ImGui.SameLine();
-            ImGui.RadioButton("Minutes", ref options, 2);
-            ImGui.RadioButton("Hours", ref options, 4); ImGui.SameLine();
-            ImGui.RadioButton("Days", ref options, 8);
+            ImGui.RadioButton(Loc.Localize("Config - Display Normal", "Normal"), ref options, 0);
+            ImGui.RadioButton(Loc.Localize("Time - Seconds", "Seconds"), ref options, 1); ImGui.SameLine();
+            ImGui.RadioButton(Loc.Localize("Time - Minutes", "Minutes"), ref options, 2);
+            ImGui.RadioButton(Loc.Localize("Time - Hours", "Hours"), ref options, 4); ImGui.SameLine();
+            ImGui.RadioButton(Loc.Localize("Time - Days", "Days"), ref options, 8);
             
             if ((TimeOptions) options != plugin.Configuration.TimeOption)
             {
@@ -54,7 +56,7 @@ public class GeneralSettings
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
             
             var current = plugin.Configuration.ShowCurrent;
-            if (ImGui.Checkbox("Show current character", ref current))
+            if (ImGui.Checkbox(Loc.Localize("Config - Current Character", "Show current character"), ref current))
             {
                 plugin.ReloadConfig();
                 plugin.Configuration.ShowCurrent = current;
@@ -62,7 +64,7 @@ public class GeneralSettings
             }
             
             var all = plugin.Configuration.ShowAll;
-            if (ImGui.Checkbox("Show other characters", ref all))
+            if (ImGui.Checkbox(Loc.Localize("Config - Other Characters", "Show other characters"), ref all))
             {
                 plugin.ReloadConfig();
                 plugin.Configuration.ShowAll = all;
@@ -70,10 +72,10 @@ public class GeneralSettings
             }
             
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
-            ImGui.Text("Server Bar:");
+            ImGui.Text(Loc.Localize("Config - Header Server Bar", "Server Bar:"));
             
             var showServerBar = plugin.Configuration.ShowServerBar;
-            if (ImGui.Checkbox("Enabled", ref showServerBar))
+            if (ImGui.Checkbox(Loc.Localize("Config - Enabled", "Enabled"), ref showServerBar))
             {
                 plugin.ReloadConfig();
                 plugin.Configuration.ShowServerBar = showServerBar;
@@ -81,7 +83,7 @@ public class GeneralSettings
             }
             
             var serverBarCharacter = plugin.Configuration.ServerBarCharacter;
-            if (ImGui.Checkbox("Time on character", ref serverBarCharacter))
+            if (ImGui.Checkbox(Loc.Localize("Config - Current Character", "Show current character"), ref serverBarCharacter))
             {
                 plugin.ReloadConfig();
                 plugin.Configuration.ServerBarCharacter = serverBarCharacter;
@@ -89,17 +91,17 @@ public class GeneralSettings
             }
             
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
-            ImGui.Text("AutoSave:");
+            ImGui.Text(Loc.Localize("Config - Header AutoSave", "AutoSave:"));
             
             var autoSaveEnabled = plugin.Configuration.AutoSaveEnabled;
-            if (ImGui.Checkbox("Enabled", ref autoSaveEnabled))
+            if (ImGui.Checkbox(Loc.Localize("Config - Enabled", "Enabled"), ref autoSaveEnabled))
             {
                 plugin.ReloadConfig();
                 plugin.Configuration.AutoSaveEnabled = autoSaveEnabled;
                 plugin.Configuration.Save();
             }
             
-            ImGui.SliderInt("Minutes##autosave_in_minutes", ref _currentNumber, 5, 60);
+            ImGui.SliderInt($"{Loc.Localize("Time - Minutes", "Minutes")}##autosave_in_minutes", ref _currentNumber, 5, 60);
             if (ImGui.IsItemDeactivatedAfterEdit())
             {
                 _currentNumber = Math.Clamp(_currentNumber, 5, 60); 
@@ -120,20 +122,36 @@ public class GeneralSettings
             var spacing = ImGui.GetScrollMaxY() == 0 ? 100.0f : 120.0f;
             ImGui.SameLine(ImGui.GetWindowWidth() - spacing);
         
-            if (ImGui.Button("Show Playtime"))
+            if (ImGui.Button(Loc.Localize("Config - Button Playtime", "Show Playtime")))
             {
                 playtimeTracker.Visible = true;
             }
             
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
-            ImGui.Text("Display Option:");
+            ImGui.Text(Loc.Localize("Config - Display Header", "Display Option:"));
 
             var showCharacter = plugin.Configuration.ShowCharacter;
-            if (ImGui.Checkbox("Show current Character", ref showCharacter))
+            if (ImGui.Checkbox(Loc.Localize("Config - Current Character", "Show current character"), ref showCharacter))
             {
                 plugin.ReloadConfig();
                 plugin.Configuration.ShowCharacter = showCharacter;
                 plugin.Configuration.Save();
+            }
+            
+            ImGui.EndTabItem();
+        }
+    }
+
+    public static void DebugTab()
+    {
+        if (ImGui.BeginTabItem($"Debug###debug-tab"))
+        {
+            if(ImGui.Button("Export Loc"))
+            {
+                var pwd = Directory.GetCurrentDirectory();
+                Directory.SetCurrentDirectory(Plugin.PluginInterface!.AssemblyLocation.DirectoryName!);
+                Loc.ExportLocalizable();
+                Directory.SetCurrentDirectory(pwd);
             }
             
             ImGui.EndTabItem();

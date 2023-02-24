@@ -21,7 +21,7 @@ public class CharacterList
         if (!ImGui.BeginTable("##CharacterListTable", 2, ImGuiTableFlags.None)) 
             return;
 
-        ImGui.TableSetupColumn("##CLT_plusbutton", ImGuiTableColumnFlags.None, 0.10f);
+        ImGui.TableSetupColumn("##CLT_delbutton", ImGuiTableColumnFlags.None, 0.10f);
         ImGui.TableSetupColumn("##CLT_nameheader");
         
         if (plugin.Configuration.StoredPlaytimes.Any())

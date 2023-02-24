@@ -60,6 +60,10 @@ namespace BetterPlaytime
                     // Renders Character Deletion UI
                     this.CharacterList.RenderCharacterList();
                     
+                    #if DEBUG
+                    GeneralSettings.DebugTab();
+                    #endif
+                    
                     ImGui.EndTabBar();
                 }
             }

@@ -11,6 +11,7 @@ using BetterPlaytime.Attributes;
 using BetterPlaytime.Data;
 using BetterPlaytime.Gui;
 using BetterPlaytime.Logic;
+using CheapLoc;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Logging;
@@ -27,14 +28,15 @@ namespace BetterPlaytime
         [PluginService] public static Framework Framework { get; private set; } = null!;
         
         public string Name => "BetterPlaytime";
-        
-        private DalamudPluginInterface PluginInterface { get; init; }
+
+        public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
         public Configuration Configuration { get; set; }
+        private Localization Localization = new();
         private PluginUI PluginUi { get; init; }
         private TimeManager TimeManager { get; init; }
         private ServerBar ServerBar { get; init; }
         private ClientState clientState;
-        private static XivCommonBase xivCommon;
+        private static XivCommonBase xivCommon = null!;
         private bool pluginSendCommand = false;
         
         private readonly PluginCommandManager<Plugin> commandManager;
@@ -43,7 +45,7 @@ namespace BetterPlaytime
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
             [RequiredVersion("1.0")] CommandManager commands,
             [RequiredVersion("1.0")] ClientState clientState,
-            DtrBar dtrBar)
+            [RequiredVersion("1.0")] DtrBar dtrBar)
         {
             PluginInterface = pluginInterface;
             this.clientState = clientState;
@@ -57,9 +59,13 @@ namespace BetterPlaytime
             
             commandManager = new PluginCommandManager<Plugin>(this, commands);
             
+            Localization.SetupWithLangCode(PluginInterface.UiLanguage);
+            
+            
             Chat.ChatMessage += OnChatMessage;
             PluginInterface.UiBuilder.Draw += DrawUI;
             PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            PluginInterface.LanguageChanged += Localization.SetupWithLangCode;
             clientState.Login += OnLogin;
             clientState.Logout += OnLogout;
             
@@ -140,7 +146,7 @@ namespace BetterPlaytime
             if (!m.Success) return;
             
             var playerName = GetLocalPlayerName();
-            if (playerName == null) return;
+            if (playerName == string.Empty) return;
 
             PluginLog.Debug($"Extracted Player Name: {playerName}.");
             PluginLog.Debug($"Extracted Playtime: {message}\n    Matches: D: {m.Groups["days"]} H: {m.Groups["hours"]} M: {m.Groups["minutes"]}");
@@ -164,7 +170,7 @@ namespace BetterPlaytime
             }
             catch (FormatException e)
             {
-                Chat.PrintError("Unable to parse playtime.");
+                Chat.PrintError(Loc.Localize("Chat - Parsing Error", "Unable to parse playtime."));
                 PluginLog.Error(e.ToString());
                 PluginLog.Error(message.ToString());
             }
@@ -180,12 +186,12 @@ namespace BetterPlaytime
             }
         }
 
-        public string? GetLocalPlayerName()
+        public string GetLocalPlayerName()
         {
             var local = clientState.LocalPlayer;
             if (local == null || local.HomeWorld.GameData?.Name == null)
             {
-                return null;
+                return string.Empty;
             }
             return $"{local.Name}\uE05D{local.HomeWorld.GameData.Name}";
         }
@@ -198,6 +204,10 @@ namespace BetterPlaytime
         
         public void Dispose()
         {
+            PluginInterface.UiBuilder.Draw -= DrawUI;
+            PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUI;
+            PluginInterface.LanguageChanged -= Localization.SetupWithLangCode;
+            
             Chat.ChatMessage -= OnChatMessage;
             clientState.Login -= OnLogin;
             clientState.Logout -= OnLogout;

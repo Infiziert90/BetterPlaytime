@@ -1,5 +1,6 @@
 using System.Numerics;
 using BetterPlaytime.Logic;
+using CheapLoc;
 using ImGuiNET;
 
 namespace BetterPlaytime.Gui;
@@ -31,9 +32,15 @@ public class PlaytimeTracker
             if (timeManager.CheckIfCharacterIsUsed())
             {
                 var character = timeManager.GetCurrentPlaytime();
-                ImGui.TextColored(_greenColor, $"On Character: {(character != "" ? character : "less than a minute")}");
+                ImGui.TextColored(_greenColor, 
+                    $"{Loc.Localize("Tracker - On Character", "On Character")}: {(character != "" 
+                        ? character 
+                        : Loc.Localize("Tracker - Playtime under minute", "less than a minute"))}");
             }
-            ImGui.TextColored(_greenColor, $"Total: {(total != "" ? total : "less than a minute")}");
+            ImGui.TextColored(_greenColor, 
+                $"{Loc.Localize("Tracker - Total Playtime", "Total:")}: {(total != "" 
+                    ? total 
+                    : Loc.Localize("Tracker - Playtime under minute", "less than a minute"))}");
 
             if (!plugin.Configuration.ShowCharacter) return;
             
@@ -41,7 +48,7 @@ public class PlaytimeTracker
             if (current == string.Empty) return;
             
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
-            ImGui.Text("Character Total:");
+            ImGui.Text(Loc.Localize("Tracker - Total Character Time", "Character Total:"));
             ImGui.TextColored(_greenColor, current);
         }
         ImGui.End();

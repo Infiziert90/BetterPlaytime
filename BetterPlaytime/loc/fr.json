@@ -1,0 +1,94 @@
+{
+  "Chat - Parsing Error": {
+    "message": "Unable to parse playtime.",
+    "description": "Plugin.OnChatMessage"
+  },
+  "Chat - Not registered": {
+    "message": "Current character has yet to be logged, type /playtime to update.",
+    "description": "TimeManager.PrintPlaytime"
+  },
+  "Chat - All characters": {
+    "message": "Across all characters, you have played for",
+    "description": "TimeManager.PrintPlaytime"
+  },
+  "Time - Seconds": {
+    "message": "Seconds",
+    "description": "TimeManager.GeneratePlaytime"
+  },
+  "Time - Minutes": {
+    "message": "Minutes",
+    "description": "TimeManager.GeneratePlaytime"
+  },
+  "Time - Hours": {
+    "message": "Hours",
+    "description": "TimeManager.GeneratePlaytime"
+  },
+  "Time - Days": {
+    "message": "Days",
+    "description": "TimeManager.GeneratePlaytime"
+  },
+  "Time - Day": {
+    "message": "Day",
+    "description": "TimeManager.GeneratePlaytimeString"
+  },
+  "Time - Hour": {
+    "message": "Hour",
+    "description": "TimeManager.GeneratePlaytimeString"
+  },
+  "Time - Minute": {
+    "message": "Minute",
+    "description": "TimeManager.GeneratePlaytimeString"
+  },
+  "Config - Button Playtime": {
+    "message": "Show Playtime",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Config - Header Chat": {
+    "message": "Chat Output:",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Config - Display Normal": {
+    "message": "Normal",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Config - Current Character": {
+    "message": "Show current character",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Config - Other Characters": {
+    "message": "Show other characters",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Config - Header Server Bar": {
+    "message": "Server Bar:",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Config - Enabled": {
+    "message": "Enabled",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Config - Header AutoSave": {
+    "message": "AutoSave:",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Config - Display Header": {
+    "message": "Display Option:",
+    "description": "GeneralSettings.RenderGeneralSettings"
+  },
+  "Tracker - On Character": {
+    "message": "On Character",
+    "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
+  },
+  "Tracker - Playtime under minute": {
+    "message": "less than a minute",
+    "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
+  },
+  "Tracker - Total Playtime": {
+    "message": "Total:",
+    "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
+  },
+  "Tracker - Total Character Time": {
+    "message": "Character Total:",
+    "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
+  }
+}

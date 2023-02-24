@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using BetterPlaytime.Data;
+using CheapLoc;
 using Dalamud.Game;
 using Dalamud.Logging;
 
@@ -28,14 +29,14 @@ public class TimeManager
     public void PrintPlaytime()
     {
         var playerName = plugin.GetLocalPlayerName();
-        if (playerName == null) return;
+        if (playerName == string.Empty) return;
         
         plugin.ReloadConfig();
         var currentChar = plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
         if (currentChar == null)
         {
             // Impossible to reach?
-            Plugin.Chat.Print("Current character has yet to be logged, type /playtime to update.");
+            Plugin.Chat.Print(Loc.Localize("Chat - Not registered", "Current character has yet to be logged, type /playtime to update."));
             return;
         }
         
@@ -59,7 +60,7 @@ public class TimeManager
         } 
         
         if (plugin.Configuration.StoredPlaytimes.Count > 1)
-            Plugin.Chat.Print($"Across all characters, you have played for: {GeneratePlaytime(span)}");
+            Plugin.Chat.Print($"{Loc.Localize("Chat - All characters", "Across all characters, you have played for")}: {GeneratePlaytime(span)}");
     }
     
     private string GeneratePlaytime(TimeSpan time)
@@ -67,10 +68,10 @@ public class TimeManager
         return plugin.Configuration.TimeOption switch
         {
             TimeOptions.Normal => GeneratePlaytimeString(time),
-            TimeOptions.Seconds => $"{time.TotalSeconds:n0} seconds",
-            TimeOptions.Minutes => $"{time.TotalMinutes:n0} minutes",
-            TimeOptions.Hours => $"{time.TotalHours:n2} hours",
-            TimeOptions.Days => $"{time.TotalDays:n2} days",
+            TimeOptions.Seconds => $"{time.TotalSeconds:n0} {Loc.Localize("Time - Seconds", "Seconds")}",
+            TimeOptions.Minutes => $"{time.TotalMinutes:n0} {Loc.Localize("Time - Minutes", "Minutes")}",
+            TimeOptions.Hours => $"{time.TotalHours:n2} {Loc.Localize("Time - Hours", "Hours")}",
+            TimeOptions.Days => $"{time.TotalDays:n2} {Loc.Localize("Time - Days", "Days")}",
             _ => GeneratePlaytimeString(time)
         };
     }
@@ -78,9 +79,9 @@ public class TimeManager
     public string GeneratePlaytimeString(TimeSpan time)
     {
         var formatted =
-            $"{(time.Days > 0 ? $"{time.Days:n0} day{(time.Days == 1 ? string.Empty : 's')}, " : string.Empty)}" +
-            $"{(time.Hours > 0 ? $"{time.Hours:n0} hour{(time.Hours == 1 ? string.Empty : 's')}, " : string.Empty)}" +
-            $"{(time.Minutes > 0 ? $"{time.Minutes:n0} minute{(time.Minutes == 1 ? string.Empty : "s")}, " : string.Empty)}";
+            $"{(time.Days > 0 ? $"{time.Days:n0} {(time.Days == 1 ? Loc.Localize("Time - Day", "Day") : Loc.Localize("Time - Days", "Days"))}, " : string.Empty)}" +
+            $"{(time.Hours > 0 ? $"{time.Hours:n0} {(time.Hours == 1 ? Loc.Localize("Time - Hour", "Hour") : Loc.Localize("Time - Hours", "Hours"))}, " : string.Empty)}" +
+            $"{(time.Minutes > 0 ? $"{time.Minutes:n0} {(time.Minutes == 1 ? Loc.Localize("Time - Minute", "Minute") : Loc.Localize("Time - Minutes", "Minutes"))}, " : string.Empty)}";
         if (formatted.EndsWith(", ")) formatted = formatted[..^2];
 
         return formatted;
@@ -154,17 +155,17 @@ public class TimeManager
     public string GetCharacterPlaytime()
     {
         var playerName = plugin.GetLocalPlayerName();
-        if (playerName == null) return string.Empty;
+        if (playerName == string.Empty) return playerName;
         
         var currentChar = plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
         return currentChar == null ? string.Empty : new string($"{GeneratePlaytime(currentChar.PTime + _autoSaveTime.Elapsed)}");
     }
 
-    public TimeSpan CalculateCharacterPlaytime() => _totalSessionTime.Elapsed.Subtract(_characterPlaytime);
+    public TimeSpan CalculateCharacterPlaytime() => _totalSessionTime!.Elapsed.Subtract(_characterPlaytime);
     public bool CheckIfCharacterIsUsed() => !_characterPlaytime.Equals(Zero);
     public string GetCurrentPlaytime() => GeneratePlaytimeString(CalculateCharacterPlaytime());
-    public string GetTotalPlaytime() => GeneratePlaytimeString(_totalSessionTime.Elapsed);
-    public string GetServerBarPlaytime() => GenerateServerBarString(_totalSessionTime.Elapsed);
+    public string GetTotalPlaytime() => GeneratePlaytimeString(_totalSessionTime!.Elapsed);
+    public string GetServerBarPlaytime() => GenerateServerBarString(_totalSessionTime!.Elapsed);
     public string GetServerBarCharacter() => GenerateServerBarString(CalculateCharacterPlaytime());
 
     public void StartAutoSave() => _autoSaveTime.Start();

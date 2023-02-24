@@ -23,7 +23,7 @@ public class ServerBar
         {
             dtrEntry = dtrBar.Get(dtrBarTitle);
         }
-        catch (ArgumentException e)
+        catch (Exception e)
         {
             // This usually only runs once after any given plugin reload
             for (var i = 0; i < 5; i++)
