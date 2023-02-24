@@ -38,7 +38,7 @@ public class PlaytimeTracker
                         : Loc.Localize("Tracker - Playtime under minute", "less than a minute"))}");
             }
             ImGui.TextColored(_greenColor, 
-                $"{Loc.Localize("Tracker - Total Playtime", "Total:")}: {(total != "" 
+                $"{Loc.Localize("Tracker - Total Playtime", "Total:")} {(total != "" 
                     ? total 
                     : Loc.Localize("Tracker - Playtime under minute", "less than a minute"))}");
 

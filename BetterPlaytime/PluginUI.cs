@@ -47,8 +47,8 @@ namespace BetterPlaytime
                 return;
             }
             
-            ImGui.SetNextWindowSize(new Vector2(260, 380), ImGuiCond.FirstUseEver);
-            ImGui.SetNextWindowSizeConstraints(new Vector2(260, 380), new Vector2(float.MaxValue, float.MaxValue));
+            ImGui.SetNextWindowSize(new Vector2(300, 400), ImGuiCond.FirstUseEver);
+            ImGui.SetNextWindowSizeConstraints(new Vector2(300, 400), new Vector2(float.MaxValue, float.MaxValue));
             if (ImGui.Begin("Better Playtime Config", ref this.settingsVisible, ImGuiWindowFlags.NoCollapse ))
             {
 

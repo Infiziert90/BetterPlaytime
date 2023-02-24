@@ -1,18 +1,18 @@
 {
   "Chat - Parsing Error": {
-    "message": "Unable to parse playtime.",
+    "message": "Échec lors de l'analyse de votre temps de jeu.",
     "description": "Plugin.OnChatMessage"
   },
   "Chat - Not registered": {
-    "message": "Current character has yet to be logged, type /playtime to update.",
+    "message": "Le personnage actuel n'est pas encore enregistré, veuillez écrire /playtime pour le mettre à jour.",
     "description": "TimeManager.PrintPlaytime"
   },
   "Chat - All characters": {
-    "message": "Across all characters, you have played for",
+    "message": "En cumulant tous vos personnages, vous avez joué durant",
     "description": "TimeManager.PrintPlaytime"
   },
   "Time - Seconds": {
-    "message": "Seconds",
+    "message": "Secondes",
     "description": "TimeManager.GeneratePlaytime"
   },
   "Time - Minutes": {
@@ -20,19 +20,19 @@
     "description": "TimeManager.GeneratePlaytime"
   },
   "Time - Hours": {
-    "message": "Hours",
+    "message": "Heures",
     "description": "TimeManager.GeneratePlaytime"
   },
   "Time - Days": {
-    "message": "Days",
+    "message": "Jours",
     "description": "TimeManager.GeneratePlaytime"
   },
   "Time - Day": {
-    "message": "Day",
+    "message": "Jour",
     "description": "TimeManager.GeneratePlaytimeString"
   },
   "Time - Hour": {
-    "message": "Hour",
+    "message": "Heure",
     "description": "TimeManager.GeneratePlaytimeString"
   },
   "Time - Minute": {
@@ -40,11 +40,11 @@
     "description": "TimeManager.GeneratePlaytimeString"
   },
   "Config - Button Playtime": {
-    "message": "Show Playtime",
+    "message": "Afficher le temps de jeu",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Header Chat": {
-    "message": "Chat Output:",
+    "message": "Saisie dans le chat :",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Display Normal": {
@@ -52,43 +52,43 @@
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Current Character": {
-    "message": "Show current character",
+    "message": "Afficher uniquement le personnage actuel",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Other Characters": {
-    "message": "Show other characters",
+    "message": "Afficher seulement les autres personnages",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Header Server Bar": {
-    "message": "Server Bar:",
+    "message": "Barre serveur :",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Enabled": {
-    "message": "Enabled",
+    "message": "Activé",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Header AutoSave": {
-    "message": "AutoSave:",
+    "message": "Sauvegarde auto. :",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Display Header": {
-    "message": "Display Option:",
+    "message": "Option d'affichage :",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Tracker - On Character": {
-    "message": "On Character",
+    "message": "Sur ce personnage",
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   },
   "Tracker - Playtime under minute": {
-    "message": "less than a minute",
+    "message": "moins d'une minute",
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   },
   "Tracker - Total Playtime": {
-    "message": "Total:",
+    "message": "Total :",
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   },
   "Tracker - Total Character Time": {
-    "message": "Character Total:",
+    "message": "Total de ce personnage :",
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   }
 }

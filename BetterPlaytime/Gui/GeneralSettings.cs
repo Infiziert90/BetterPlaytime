@@ -27,14 +27,8 @@ public class GeneralSettings
         if (ImGui.BeginTabItem($"General###general-tab"))
         {
             ImGui.Dummy(new Vector2(0,0));
-            
-            var spacing = ImGui.GetScrollMaxY() == 0 ? 100.0f : 120.0f;
-            ImGui.SameLine(ImGui.GetWindowWidth() - spacing);
-        
-            if (ImGui.Button(Loc.Localize("Config - Button Playtime", "Show Playtime")))
-            {
-                playtimeTracker.Visible = true;
-            }
+
+            PlaytimeButton();
             
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
             ImGui.Text(Loc.Localize("Config - Header Chat", "Chat Output:"));
@@ -115,17 +109,12 @@ public class GeneralSettings
 
             ImGui.EndTabItem();
         }
+        
         if (ImGui.BeginTabItem($"UI###ui-tab"))
         {
             ImGui.Dummy(new Vector2(0,0));
-            
-            var spacing = ImGui.GetScrollMaxY() == 0 ? 100.0f : 120.0f;
-            ImGui.SameLine(ImGui.GetWindowWidth() - spacing);
-        
-            if (ImGui.Button(Loc.Localize("Config - Button Playtime", "Show Playtime")))
-            {
-                playtimeTracker.Visible = true;
-            }
+
+            PlaytimeButton();
             
             ImGui.Dummy(new Vector2(0.0f, 5.0f));
             ImGui.Text(Loc.Localize("Config - Display Header", "Display Option:"));
@@ -155,6 +144,20 @@ public class GeneralSettings
             }
             
             ImGui.EndTabItem();
+        }
+    }
+
+    public void PlaytimeButton()
+    {
+        var text = Loc.Localize("Config - Button Playtime", "Show Playtime");
+        var textLength = ImGui.CalcTextSize(text).X;
+        
+        var scrollBarSpacing = ImGui.GetScrollMaxY() == 0 ? 0.0f : 15.0f;
+        ImGui.SameLine(ImGui.GetWindowWidth() - 15.0f - textLength - scrollBarSpacing);
+        
+        if (ImGui.Button(Loc.Localize("Config - Button Playtime", "Show Playtime")))
+        {
+            playtimeTracker.Visible = true;
         }
     }
 }
