@@ -8,7 +8,7 @@
     "description": "TimeManager.PrintPlaytime"
   },
   "Chat - All characters": {
-    "message": "En cumulant tous vos personnages, vous avez joué durant",
+    "message": "À travers tous les personnages, vous avez joué pendant",
     "description": "TimeManager.PrintPlaytime"
   },
   "Time - Seconds": {
@@ -44,7 +44,7 @@
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Header Chat": {
-    "message": "Saisie dans le chat :",
+    "message": "Sortie du chat:",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Display Normal": {
@@ -52,15 +52,15 @@
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Current Character": {
-    "message": "Afficher uniquement le personnage actuel",
+    "message": "Afficher le personnage actuel",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Other Characters": {
-    "message": "Afficher seulement les autres personnages",
+    "message": "Afficher les autres personnages",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Header Server Bar": {
-    "message": "Barre serveur :",
+    "message": "Barre de serveur:",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Enabled": {
@@ -76,7 +76,7 @@
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Tracker - On Character": {
-    "message": "Sur ce personnage",
+    "message": "Sur le personnage",
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   },
   "Tracker - Playtime under minute": {
@@ -88,7 +88,7 @@
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   },
   "Tracker - Total Character Time": {
-    "message": "Total de ce personnage :",
+    "message": "Total du personnage :",
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   }
 }

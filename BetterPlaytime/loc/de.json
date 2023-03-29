@@ -60,7 +60,7 @@
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Header Server Bar": {
-    "message": "Server Bar:",
+    "message": "Server-Leiste:",
     "description": "GeneralSettings.RenderGeneralSettings"
   },
   "Config - Enabled": {
@@ -84,11 +84,11 @@
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   },
   "Tracker - Total Playtime": {
-    "message": "Total:",
+    "message": "Gesamt:",
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   },
   "Tracker - Total Character Time": {
-    "message": "Charakter Total:",
+    "message": "Charakter insgesamt:",
     "description": "PlaytimeTracker.DrawPlaytimeTrackerWindow"
   }
 }
