@@ -91,7 +91,7 @@ public class TimeManager
     {
         var formatted =
             $"{(time.Days > 0 ? $"{time.Days:n0}:" : string.Empty)}" +
-            $"{(time.Days > 1 ? $"{time.Hours:00;n0}:" : time.Hours > 0 ? $"{time.Hours:00;n0}:" : string.Empty)}" +
+            $"{(time.Days > 0 ? $"{time.Hours:00;n0}:" : time.Hours > 0 ? $"{time.Hours:00;n0}:" : string.Empty)}" +
             $"{time.Minutes:00;n0}:" +
             $"{time.Seconds:00;n0}";
 
