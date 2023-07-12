@@ -11,12 +11,12 @@ namespace BetterPlaytime.Logic;
 
 public class TimeManager
 {
-    private static readonly TimeSpan Zero = new TimeSpan(0, 0, 0, 0);
+    private static readonly TimeSpan Zero = new(0, 0, 0, 0);
 
     private readonly Plugin plugin;
-    
+
     public string PlayerName = string.Empty;
-    
+
     private TimeSpan _characterPlaytime;
     private Stopwatch? _totalSessionTime;
     private readonly Stopwatch _autoSaveTime = new();
@@ -25,12 +25,12 @@ public class TimeManager
     {
         this.plugin = plugin;
     }
-    
+
     public void PrintPlaytime()
     {
         var playerName = plugin.GetLocalPlayerName();
         if (playerName == string.Empty) return;
-        
+
         plugin.ReloadConfig();
         var currentChar = plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
         if (currentChar == null)
@@ -39,11 +39,11 @@ public class TimeManager
             Plugin.Chat.Print(Loc.Localize("Chat - Not registered", "Current character has yet to be logged, type /playtime to update."));
             return;
         }
-        
+
         var span = currentChar.PTime;
         if (plugin.Configuration.StoredPlaytimes.Count == 1 || plugin.Configuration.ShowCurrent)
         {
-            Plugin.Chat.Print($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}"); 
+            Plugin.Chat.Print($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}");
             PluginLog.Information($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}");
         }
 
@@ -57,12 +57,12 @@ public class TimeManager
             }
 
             span += character.PTime;
-        } 
-        
+        }
+
         if (plugin.Configuration.StoredPlaytimes.Count > 1)
             Plugin.Chat.Print($"{Loc.Localize("Chat - All characters", "Across all characters, you have played for")}: {GeneratePlaytime(span)}");
     }
-    
+
     private string GeneratePlaytime(TimeSpan time)
     {
         return plugin.Configuration.TimeOption switch
@@ -75,7 +75,7 @@ public class TimeManager
             _ => GeneratePlaytimeString(time)
         };
     }
-    
+
     public string GeneratePlaytimeString(TimeSpan time)
     {
         var formatted =
@@ -86,12 +86,12 @@ public class TimeManager
 
         return formatted;
     }
-    
+
     public string GenerateServerBarString(TimeSpan time)
     {
         var formatted =
             $"{(time.Days > 0 ? $"{time.Days:n0}:" : string.Empty)}" +
-            $"{(time.Hours > 0 ? $"{time.Hours:00;n0}:" : string.Empty)}" +
+            $"{(time.Days > 1 ? $"{time.Hours:00;n0}:" : time.Hours > 0 ? $"{time.Hours:00;n0}:" : string.Empty)}" +
             $"{time.Minutes:00;n0}:" +
             $"{time.Seconds:00;n0}";
 
@@ -103,14 +103,14 @@ public class TimeManager
         _totalSessionTime ??= new Stopwatch();
         var elapsed = _totalSessionTime.Elapsed;
         _characterPlaytime = new TimeSpan(elapsed.Days, elapsed.Hours, elapsed.Minutes, elapsed.Seconds);
-        
+
         _totalSessionTime.Start();
     }
-    
+
     public void ShutdownTimers()
     {
         if (_totalSessionTime == null) return;
-        
+
         _totalSessionTime.Stop();
         PluginLog.Debug($"Playtime of {PlayerName}: {CalculateCharacterPlaytime():hh\\:mm\\:ss}");
         PluginLog.Debug($"Full Playtime: {_totalSessionTime.Elapsed:hh\\:mm\\:ss}");
@@ -138,25 +138,25 @@ public class TimeManager
             PluginLog.Debug("Auto saving is disabled...");
             return;
         }
-        
+
         PluginLog.Debug("Check for player name...");
         if (PlayerName == string.Empty) return;
-        
+
         PluginLog.Debug("Check if player name exists...");
         plugin.ReloadConfig();
         var playtime = plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == PlayerName);
         if (playtime == null) return;
-        
+
         PluginLog.Debug("Saving playtime...");
         playtime.PTime += _autoSaveTime.Elapsed;
         plugin.Configuration.Save();
     }
-    
+
     public string GetCharacterPlaytime()
     {
         var playerName = plugin.GetLocalPlayerName();
         if (playerName == string.Empty) return playerName;
-        
+
         var currentChar = plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
         return currentChar == null ? string.Empty : new string($"{GeneratePlaytime(currentChar.PTime + _autoSaveTime.Elapsed)}");
     }
