@@ -1,8 +1,5 @@
 ﻿using Dalamud.Game.Command;
 using BetterPlaytime.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using static Dalamud.Game.Command.CommandInfo;
 
@@ -26,7 +23,7 @@ namespace BetterPlaytime
 
             AddCommandHandlers();
         }
-        
+
         private void AddCommandHandlers()
         {
             foreach (var (command, commandInfo) in this.pluginCommands)

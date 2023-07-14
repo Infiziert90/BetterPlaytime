@@ -1,5 +1,3 @@
-using System;
-
 namespace BetterPlaytime.Data;
 
 public class Playtime

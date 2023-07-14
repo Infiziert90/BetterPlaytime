@@ -8,6 +8,9 @@
   "ApplicableVersion": "any",
   "Tags": [
     "Playtime",
-    "plugin"
+    "plugin",
+    "Time",
+    "ServerBar",
+    "QoL"
   ]
 }
