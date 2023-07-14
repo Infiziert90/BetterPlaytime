@@ -33,14 +33,14 @@ public partial class ConfigWindow
             {
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
                 if (ImGui.Button("Discord Thread"))
-                    Dalamud.Utility.Util.OpenLink("https://canary.discord.com/channels/581875019861328007/1094255662860599428");
+                    Dalamud.Utility.Util.OpenLink("https://canary.discord.com/channels/581875019861328007/1019677676883169350");
                 ImGui.PopStyleColor();
 
                 ImGui.SameLine();
 
                 ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.DPSRed);
                 if (ImGui.Button("Issues"))
-                    Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/SubmarineTracker/issues");
+                    Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/BetterPlaytime/issues");
                 ImGui.PopStyleColor();
 
                 ImGui.SameLine();
