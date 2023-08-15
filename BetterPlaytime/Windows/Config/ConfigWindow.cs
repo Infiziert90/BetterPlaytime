@@ -36,8 +36,9 @@ public partial class ConfigWindow : Window, IDisposable
             About();
 
             DebugTab();
+
+            ImGui.EndTabBar();
         }
-        ImGui.EndTabBar();
     }
 
     private static void DebugTab()

@@ -59,7 +59,7 @@ public partial class ConfigWindow
         {
             ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.TankBlue);
             if (ImGui.Button("Playtime"))
-                Dalamud.Utility.Util.OpenLink("https://ko-fi.com/infiii");
+                Plugin.TrackerWindow.IsOpen = true;
             ImGui.PopStyleColor();
         }
         ImGui.EndChild();
