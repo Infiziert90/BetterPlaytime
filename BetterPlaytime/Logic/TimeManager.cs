@@ -2,8 +2,7 @@
 using System.Diagnostics;
 using BetterPlaytime.Data;
 using CheapLoc;
-using Dalamud.Game;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 
 namespace BetterPlaytime.Logic;
 
@@ -43,7 +42,7 @@ public class TimeManager
         if (Plugin.Configuration.StoredPlaytimes.Count == 1 || Plugin.Configuration.ShowCurrent)
         {
             Plugin.Chat.Print($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}");
-            PluginLog.Information($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}");
+            Plugin.Log.Information($"{currentChar.Playername}: {GeneratePlaytime(currentChar.PTime)}");
         }
 
         foreach (var character in Plugin.Configuration.StoredPlaytimes.Where(character => character.Playername != currentChar.Playername).OrderByDescending(x => x.PTime))
@@ -51,7 +50,7 @@ public class TimeManager
             if (Plugin.Configuration.ShowAll)
             {
                 Plugin.Chat.Print($"{character.Playername}: {GeneratePlaytime(character.PTime)}");
-                PluginLog.Information($"{character.Playername}: {GeneratePlaytime(character.PTime)}");
+                Plugin.Log.Information($"{character.Playername}: {GeneratePlaytime(character.PTime)}");
             }
 
             totalPlaytime += character.PTime;
@@ -109,11 +108,11 @@ public class TimeManager
             return;
 
         TotalSessionTime.Stop();
-        PluginLog.Debug($"Playtime of {PlayerName}: {CalculateCharacterPlaytime():hh\\:mm\\:ss}");
-        PluginLog.Debug($"Full Playtime: {TotalSessionTime.Elapsed:hh\\:mm\\:ss}");
+        Plugin.Log.Debug($"Playtime of {PlayerName}: {CalculateCharacterPlaytime():hh\\:mm\\:ss}");
+        Plugin.Log.Debug($"Full Playtime: {TotalSessionTime.Elapsed:hh\\:mm\\:ss}");
     }
 
-    public void AutoSaveEvent(Framework framework)
+    public void AutoSaveEvent(IFramework framework)
     {
         if (AutoSaveWatch.Elapsed.Minutes < Plugin.Configuration.AutoSaveAfter)
             return;
@@ -132,21 +131,21 @@ public class TimeManager
     {
         if (!Plugin.Configuration.AutoSaveEnabled)
         {
-            PluginLog.Debug("Auto save is disabled...");
+            Plugin.Log.Debug("Auto save is disabled...");
             return;
         }
 
-        PluginLog.Debug("Check for player name...");
+        Plugin.Log.Debug("Check for player name...");
         if (PlayerName == string.Empty)
             return;
 
-        PluginLog.Debug("Check if player name exists...");
+        Plugin.Log.Debug("Check if player name exists...");
         Plugin.ReloadConfig();
         var playtime = Plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == PlayerName);
         if (playtime == null)
             return;
 
-        PluginLog.Debug("Saving playtime...");
+        Plugin.Log.Debug("Saving playtime...");
         playtime.PTime += AutoSaveWatch.Elapsed;
         Plugin.Configuration.Save();
     }

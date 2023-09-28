@@ -1,4 +1,6 @@
-﻿namespace BetterPlaytime.Windows.Config;
+﻿using Dalamud.Interface.Utility;
+
+namespace BetterPlaytime.Windows.Config;
 
 public partial class ConfigWindow
 {

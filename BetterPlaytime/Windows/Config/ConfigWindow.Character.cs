@@ -1,5 +1,6 @@
 using CheapLoc;
 using Dalamud.Interface.Components;
+using Dalamud.Interface.Utility;
 
 namespace BetterPlaytime.Windows.Config;
 

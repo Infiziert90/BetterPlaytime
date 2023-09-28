@@ -1,6 +1,5 @@
-using Dalamud.Game;
 using Dalamud.Game.Gui.Dtr;
-using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 
 namespace BetterPlaytime.Logic;
 
@@ -25,7 +24,7 @@ public class ServerBar
             // This usually only runs once after any given plugin reload
             for (var i = 0; i < 5; i++)
             {
-                PluginLog.LogError(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}, trying {DtrBarTitle}{i}");
+                Plugin.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}, trying {DtrBarTitle}{i}");
                 try
                 {
                     DtrEntry = Plugin.DtrBar.Get(DtrBarTitle + i);
@@ -46,7 +45,7 @@ public class ServerBar
         }
     }
 
-    public void UpdateTracker(Framework framework)
+    public void UpdateTracker(IFramework framework)
     {
         if (!Plugin.Configuration.ShowServerBar)
         {

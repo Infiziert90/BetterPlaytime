@@ -1,11 +1,8 @@
 ﻿#nullable enable
 using System.Reflection;
 using System.Runtime.InteropServices;
-using Dalamud.Game.Command;
 using Dalamud.IoC;
 using Dalamud.Plugin;
-using Dalamud.Game.Gui;
-using Dalamud.Game.ClientState;
 using Dalamud.Game;
 using BetterPlaytime.Attributes;
 using BetterPlaytime.Data;
@@ -14,10 +11,9 @@ using BetterPlaytime.Windows.Config;
 using BetterPlaytime.Windows.PlaytimeTracker;
 using Dalamud.Game.Text;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Logging;
-using Dalamud.Game.Gui.Dtr;
 using Dalamud.Hooking;
 using Dalamud.Interface.Windowing;
+using Dalamud.Plugin.Services;
 using XivCommon;
 
 
@@ -26,18 +22,18 @@ namespace BetterPlaytime
     public sealed class Plugin : IDalamudPlugin
     {
         [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
-        [PluginService] public static ClientState ClientState { get; private set; } = null!;
-        [PluginService] public static CommandManager CommandManager { get; private set; } = null!;
-        [PluginService] public static ChatGui Chat { get; private set; } = null!;
-        [PluginService] public static Framework Framework { get; private set; } = null!;
-        [PluginService] public static DtrBar DtrBar { get; private set; } = null!;
-        [PluginService] public static SigScanner SigScanner { get; private set; } = null!;
+        [PluginService] public static IClientState ClientState { get; private set; } = null!;
+        [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
+        [PluginService] public static IChatGui Chat { get; private set; } = null!;
+        [PluginService] public static IFramework Framework { get; private set; } = null!;
+        [PluginService] public static IDtrBar DtrBar { get; private set; } = null!;
+        [PluginService] public static ISigScanner SigScanner { get; private set; } = null!;
+        [PluginService] public static IPluginLog Log { get; private set; } = null!;
+        [PluginService] public static IGameInteropProvider Hook { get; private set; } = null!;
 
         private const string PlaytimeSig = "E8 ?? ?? ?? ?? B9 ?? ?? ?? ?? 48 8B D3";
         private delegate long PlaytimeDelegate(uint param1, long param2, uint param3);
         private Hook<PlaytimeDelegate> PlaytimeHook;
-
-        public string Name => "BetterPlaytime";
 
         public const string Authors = "Infi";
         public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
@@ -75,7 +71,7 @@ namespace BetterPlaytime
             Localization.SetupWithLangCode(PluginInterface.UiLanguage);
 
             var playtimePtr = SigScanner.ScanText(PlaytimeSig);
-            PlaytimeHook = Hook<PlaytimeDelegate>.FromAddress(playtimePtr, PlaytimePacket);
+            PlaytimeHook = Hook.HookFromAddress<PlaytimeDelegate>(playtimePtr, PlaytimePacket);
             PlaytimeHook.Enable();
 
             Chat.ChatMessage += OnChatMessage;
@@ -110,15 +106,15 @@ namespace BetterPlaytime
             }
         }
 
-        private void OnLogin(object? _, EventArgs __)
+        private void OnLogin()
         {
-            PluginLog.Debug("Login");
+            Log.Debug("Login");
             Framework.Update += TimeTracker;
         }
 
-        private void OnLogout(object? _, EventArgs __)
+        private void OnLogout()
         {
-            PluginLog.Debug("Logout");
+            Log.Debug("Logout");
             Framework.Update -= TimeTracker;
             Framework.Update -= TimeManager.AutoSaveEvent;
 
@@ -130,22 +126,22 @@ namespace BetterPlaytime
         private void PlaytimeCommand()
         {
             // send playtime command after user uses btime command
-            PluginLog.Debug($"Requesting playtime from server.");
+            Log.Debug($"Requesting playtime from server.");
             xivCommon.Functions.Chat.SendMessage("/playtime");
             SendChatCommand = true;
         }
 
-        private void TimeTracker(Framework framework)
+        private void TimeTracker(IFramework framework)
         {
             if (ClientState.LocalPlayer == null)
                 return;
 
-            PluginLog.Debug($"Checking for player name");
+            Log.Debug($"Checking for player name");
             if (TimeManager.PlayerName != string.Empty)
                 return;
 
             TimeManager.PlayerName = GetLocalPlayerName();
-            PluginLog.Debug($"New Name: {TimeManager.PlayerName}");
+            Log.Debug($"New Name: {TimeManager.PlayerName}");
             TimeManager.StartTimer();
 
             Framework.Update -= TimeTracker;
@@ -165,12 +161,12 @@ namespace BetterPlaytime
             if (playerName == string.Empty)
                 return result;
 
-            PluginLog.Debug($"Extracted Player Name: {playerName}.");
+            Log.Debug($"Extracted Player Name: {playerName}.");
 
             var totalPlaytime = (uint) Marshal.ReadInt32((nint) param2 + 0x10);
-            PluginLog.Debug($"Value from address {totalPlaytime}");
+            Log.Debug($"Value from address {totalPlaytime}");
             var playtime = TimeSpan.FromMinutes(totalPlaytime);
-            PluginLog.Debug($"{playtime}");
+            Log.Debug($"{playtime}");
 
             ReloadConfig();
             if (Configuration.StoredPlaytimes.Any())

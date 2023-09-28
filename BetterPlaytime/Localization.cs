@@ -1,7 +1,6 @@
 using System.IO;
 using System.Reflection;
 using CheapLoc;
-using Dalamud.Logging;
 
 namespace BetterPlaytime;
 
@@ -36,7 +35,7 @@ public class Localization
         }
         catch (Exception)
         {
-            PluginLog.Warning($"Could not load loc {langCode}. Setting up fallbacks.");
+            Plugin.Log.Warning($"Could not load loc {langCode}. Setting up fallbacks.");
             SetupWithFallbacks();
         }
     }
