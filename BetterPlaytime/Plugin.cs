@@ -81,7 +81,7 @@ namespace BetterPlaytime
             ClientState.Login += OnLogin;
             ClientState.Logout += OnLogout;
 
-            xivCommon = new XivCommonBase();
+            xivCommon = new XivCommonBase(PluginInterface);
 
             if (ClientState.IsLoggedIn)
                 Framework.Update += TimeTracker;
