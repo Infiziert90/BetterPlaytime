@@ -60,25 +60,28 @@ public class TimeManager
             Plugin.Chat.Print($"{Loc.Localize("Chat - All characters", "Across all characters, you have played for")}: {GeneratePlaytime(totalPlaytime)}");
     }
 
-    private string GeneratePlaytime(TimeSpan time)
+    private string GeneratePlaytime(TimeSpan time, bool withSeconds = false)
     {
         return Plugin.Configuration.TimeOption switch
         {
-            TimeOptions.Normal => GeneratePlaytimeString(time),
+            TimeOptions.Normal => GeneratePlaytimeString(time, withSeconds),
             TimeOptions.Seconds => $"{time.TotalSeconds:n0} {Loc.Localize("Time - Seconds", "Seconds")}",
             TimeOptions.Minutes => $"{time.TotalMinutes:n0} {Loc.Localize("Time - Minutes", "Minutes")}",
             TimeOptions.Hours => $"{time.TotalHours:n2} {Loc.Localize("Time - Hours", "Hours")}",
             TimeOptions.Days => $"{time.TotalDays:n2} {Loc.Localize("Time - Days", "Days")}",
-            _ => GeneratePlaytimeString(time)
+            _ => GeneratePlaytimeString(time, withSeconds)
         };
     }
 
-    private static string GeneratePlaytimeString(TimeSpan time)
+    private static string GeneratePlaytimeString(TimeSpan time, bool withSeconds = false)
     {
         var formatted =
             $"{(time.Days > 0 ? $"{time.Days:n0} {(time.Days == 1 ? Loc.Localize("Time - Day", "Day") : Loc.Localize("Time - Days", "Days"))}, " : string.Empty)}" +
             $"{(time.Hours > 0 ? $"{time.Hours:n0} {(time.Hours == 1 ? Loc.Localize("Time - Hour", "Hour") : Loc.Localize("Time - Hours", "Hours"))}, " : string.Empty)}" +
             $"{(time.Minutes > 0 ? $"{time.Minutes:n0} {(time.Minutes == 1 ? Loc.Localize("Time - Minute", "Minute") : Loc.Localize("Time - Minutes", "Minutes"))}, " : string.Empty)}";
+
+        if (withSeconds)
+            formatted += $"{time.Seconds:n0} {(time.Seconds == 1 ? Loc.Localize("Time - Second", "Second") : Loc.Localize("Time - Seconds", "Seconds"))}";
 
         if (formatted.EndsWith(", "))
             formatted = formatted[..^2];
@@ -150,14 +153,14 @@ public class TimeManager
         Plugin.Configuration.Save();
     }
 
-    public string GetCharacterPlaytime()
+    public string GetCharacterPlaytime(bool withSeconds = false)
     {
         var playerName = Plugin.GetLocalPlayerName();
         if (playerName == string.Empty)
             return playerName;
 
         var currentChar = Plugin.Configuration.StoredPlaytimes.Find(x => x.Playername == playerName);
-        return currentChar == null ? string.Empty : $"{GeneratePlaytime(currentChar.PTime + AutoSaveWatch.Elapsed)}";
+        return currentChar == null ? string.Empty : $"{GeneratePlaytime(currentChar.PTime + AutoSaveWatch.Elapsed, withSeconds)}";
     }
 
     private TimeSpan CalculateCharacterPlaytime() => TotalSessionTime!.Elapsed.Subtract(CharacterPlaytime);

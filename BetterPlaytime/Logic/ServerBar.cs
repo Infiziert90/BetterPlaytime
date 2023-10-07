@@ -42,6 +42,7 @@ public class ServerBar
         {
             DtrEntry.Text = "Playtime...";
             DtrEntry.Shown = false;
+            DtrEntry.OnClick += OnClick;
         }
     }
 
@@ -63,13 +64,26 @@ public class ServerBar
         if (Plugin.Configuration.ServerBarCharacter && Plugin.TimeManager.CheckIfCharacterIsUsed())
             total = $"{Plugin.TimeManager.GetServerBarCharacter()}/{total}";
 
+        if (Plugin.Configuration.FullPlaytimeInDtr)
+            total = Plugin.TimeManager.GetCharacterPlaytime(true);
+
         DtrEntry.Text = total;
     }
 
     private void UpdateVisibility(bool shown) => DtrEntry.Shown = shown;
 
+    private void OnClick()
+    {
+        Plugin.Configuration.FullPlaytimeInDtr ^= true;
+        Plugin.Configuration.Save();
+    }
+
     public void Dispose()
     {
-        DtrEntry?.Dispose();
+        if (DtrEntry == null)
+            return;
+
+        DtrEntry.OnClick -= OnClick;
+        DtrEntry.Dispose();
     }
 }
