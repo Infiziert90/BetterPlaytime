@@ -35,7 +35,9 @@ public partial class ConfigWindow : Window, IDisposable
 
             About();
 
+            #if DEBUG
             DebugTab();
+            #endif
 
             ImGui.EndTabBar();
         }
@@ -43,7 +45,7 @@ public partial class ConfigWindow : Window, IDisposable
 
     private static void DebugTab()
     {
-        if (!ImGui.BeginTabItem($"Debug###debug-tab"))
+        if (!ImGui.BeginTabItem($"Debug##debug-tab"))
             return;
 
         if(ImGui.Button("Export Loc"))

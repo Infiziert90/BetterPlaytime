@@ -125,7 +125,7 @@ public partial class ConfigWindow
         if (ImGui.BeginChild("GeneralBottomBar", new Vector2(0, 0), false, 0))
         {
             ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.TankBlue);
-            if (ImGui.Button("Playtime"))
+            if (ImGui.Button("Ko-Fi Tip"))
                 Dalamud.Utility.Util.OpenLink("https://ko-fi.com/infiii");
             ImGui.PopStyleColor();
         }

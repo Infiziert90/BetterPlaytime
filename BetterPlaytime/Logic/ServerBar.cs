@@ -8,42 +8,18 @@ public class ServerBar
     private Plugin Plugin;
     private readonly DtrBarEntry DtrEntry;
 
-    private const string DtrBarTitle = "BetterPlaytime";
-
     public ServerBar(Plugin plugin)
     {
         Plugin = plugin;
 
-        // https://github.com/karashiiro/PingPlugin/blob/4a1797c8155b5eb8278b71d7577610acfbbd5662/PingPlugin/PingUI.cs#L52
-        try
-        {
-            DtrEntry = Plugin.DtrBar.Get(DtrBarTitle);
-        }
-        catch (Exception e)
-        {
-            // This usually only runs once after any given plugin reload
-            for (var i = 0; i < 5; i++)
-            {
-                Plugin.Log.Error(e, $"Failed to acquire DtrBarEntry {DtrBarTitle}, trying {DtrBarTitle}{i}");
-                try
-                {
-                    DtrEntry = Plugin.DtrBar.Get(DtrBarTitle + i);
-                }
-                catch (ArgumentException)
-                {
-                    continue;
-                }
+        if (Plugin.DtrBar.Get("BetterPlaytime") is not { } entry)
+            return;
 
-                break;
-            }
-        }
+        DtrEntry = entry;
 
-        if (DtrEntry != null)
-        {
-            DtrEntry.Text = "Playtime...";
-            DtrEntry.Shown = false;
-            DtrEntry.OnClick += OnClick;
-        }
+        DtrEntry.Text = "Playtime...";
+        DtrEntry.Shown = false;
+        DtrEntry.OnClick += OnClick;
     }
 
     public void UpdateTracker(IFramework framework)
