@@ -32,11 +32,8 @@ namespace BetterPlaytime
         [PluginService] public static IGameInteropProvider Hook { get; private set; } = null!;
 
         private const string PlaytimeSig = "E8 ?? ?? ?? ?? B9 ?? ?? ?? ?? 48 8B D3";
-        private delegate long PlaytimeDelegate(uint param1, long param2, uint param3);
+        private delegate long PlaytimeDelegate(uint param1, long minutes, uint param3);
         private Hook<PlaytimeDelegate> PlaytimeHook;
-
-        public const string Authors = "Infi";
-        public static readonly string Version = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "Unknown";
 
         public Configuration Configuration { get; set; }
         private WindowSystem WindowSystem = new("BetterPlaytime");
@@ -151,9 +148,9 @@ namespace BetterPlaytime
             Framework.Update += ServerBar.UpdateTracker;
         }
 
-        private long PlaytimePacket(uint param1, long param2, uint param3)
+        private long PlaytimePacket(uint param1, long minutes, uint param3)
         {
-            var result = PlaytimeHook.Original(param1, param2, param3);
+            var result = PlaytimeHook.Original(param1, minutes, param3);
             if (param1 != 11)
                 return result;
 
@@ -163,7 +160,7 @@ namespace BetterPlaytime
 
             Log.Debug($"Extracted Player Name: {playerName}.");
 
-            var totalPlaytime = (uint) Marshal.ReadInt32((nint) param2 + 0x10);
+            var totalPlaytime = (uint) Marshal.ReadInt32((nint) minutes + 0x10);
             Log.Debug($"Value from address {totalPlaytime}");
             var playtime = TimeSpan.FromMinutes(totalPlaytime);
             Log.Debug($"{playtime}");
