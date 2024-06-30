@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System.Reflection;
 using System.Runtime.InteropServices;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -14,14 +13,12 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Hooking;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
-using XivCommon;
-
 
 namespace BetterPlaytime
 {
     public sealed class Plugin : IDalamudPlugin
     {
-        [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+        [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
         [PluginService] public static IClientState ClientState { get; private set; } = null!;
         [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
         [PluginService] public static IChatGui Chat { get; private set; } = null!;
@@ -45,7 +42,7 @@ namespace BetterPlaytime
         private readonly Localization Localization = new();
         private readonly ServerBar ServerBar;
 
-        private static XivCommonBase xivCommon = null!;
+        private static ChatCommon Common = null!;
         private bool SendChatCommand;
 
         private readonly PluginCommandManager<Plugin> Commands;
@@ -53,7 +50,6 @@ namespace BetterPlaytime
         public Plugin()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            Configuration.Initialize(PluginInterface);
 
             TimeManager = new TimeManager(this);
             ServerBar = new ServerBar(this);
@@ -78,7 +74,7 @@ namespace BetterPlaytime
             ClientState.Login += OnLogin;
             ClientState.Logout += OnLogout;
 
-            xivCommon = new XivCommonBase(PluginInterface);
+            Common = new ChatCommon();
 
             if (ClientState.IsLoggedIn)
                 Framework.Update += TimeTracker;
@@ -123,8 +119,8 @@ namespace BetterPlaytime
         private void PlaytimeCommand()
         {
             // send playtime command after user uses btime command
-            Log.Debug($"Requesting playtime from server.");
-            xivCommon.Functions.Chat.SendMessage("/playtime");
+            Log.Debug("Requesting playtime from server.");
+            Common.SendMessage("/playtime");
             SendChatCommand = true;
         }
 
@@ -133,7 +129,7 @@ namespace BetterPlaytime
             if (ClientState.LocalPlayer == null)
                 return;
 
-            Log.Debug($"Checking for player name");
+            Log.Debug("Checking for player name");
             if (TimeManager.PlayerName != string.Empty)
                 return;
 
@@ -177,7 +173,7 @@ namespace BetterPlaytime
             return result;
         }
 
-        private void OnChatMessage(XivChatType type, uint id, ref SeString sender, ref SeString message, ref bool handled)
+        private void OnChatMessage(XivChatType type, int _, ref SeString sender, ref SeString message, ref bool handled)
         {
             if (type != XivChatType.SystemMessage)
                 return;
@@ -205,7 +201,6 @@ namespace BetterPlaytime
         public void ReloadConfig()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            Configuration.Initialize(PluginInterface);
         }
 
         public void Dispose()
@@ -227,7 +222,6 @@ namespace BetterPlaytime
             TimeManager.StopAutoSave();
             Commands.Dispose();
             ServerBar.Dispose();
-            xivCommon.Dispose();
         }
 
         private void DrawUI()

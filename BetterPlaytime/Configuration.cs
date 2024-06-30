@@ -23,20 +23,11 @@ namespace BetterPlaytime
         public bool AutoSaveEnabled = true;
         public int AutoSaveAfter = 15;
 
-        public List<Playtime> StoredPlaytimes = new();
-
-        // the below exist just to make saving less cumbersome
-        [NonSerialized]
-        private DalamudPluginInterface? pluginInterface;
-
-        public void Initialize(DalamudPluginInterface pluginInterface)
-        {
-            this.pluginInterface = pluginInterface;
-        }
+        public List<Playtime> StoredPlaytimes = [];
 
         public void Save()
         {
-            this.pluginInterface!.SavePluginConfig(this);
+            Plugin.PluginInterface.SavePluginConfig(this);
         }
     }
 }

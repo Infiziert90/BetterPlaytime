@@ -6,7 +6,7 @@ namespace BetterPlaytime.Logic;
 public class ServerBar
 {
     private Plugin Plugin;
-    private readonly DtrBarEntry DtrEntry;
+    private readonly IDtrBarEntry DtrEntry;
 
     public ServerBar(Plugin plugin)
     {
@@ -60,6 +60,6 @@ public class ServerBar
             return;
 
         DtrEntry.OnClick -= OnClick;
-        DtrEntry.Dispose();
+        DtrEntry.Remove();
     }
 }
