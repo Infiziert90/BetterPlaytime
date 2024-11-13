@@ -105,7 +105,7 @@ namespace BetterPlaytime
             Framework.Update += TimeTracker;
         }
 
-        private void OnLogout()
+        private void OnLogout(int _, int __)
         {
             Log.Debug("Logout");
             Framework.Update -= TimeTracker;
@@ -192,10 +192,10 @@ namespace BetterPlaytime
         public static string GetLocalPlayerName()
         {
             var local = ClientState.LocalPlayer;
-            if (local == null || local.HomeWorld.GameData == null)
+            if (local == null || local.HomeWorld.ValueNullable == null)
                 return string.Empty;
 
-            return $"{local.Name}\uE05D{local.HomeWorld.GameData.Name}";
+            return $"{local.Name}\uE05D{local.HomeWorld.Value.Name}";
         }
 
         public void ReloadConfig()

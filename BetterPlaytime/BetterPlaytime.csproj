@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Infi</Authors>
     <AssemblyName>BetterPlaytime</AssemblyName>
-    <AssemblyVersion>1.4.1.0</AssemblyVersion>
+    <AssemblyVersion>1.4.1.1</AssemblyVersion>
     <Version>1.4.1.0</Version>
     <Description>Provides expanded functionality to seamlessly track total playtime.
       Use /btime once on each character to add them.
@@ -48,7 +48,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="2.1.13" />
+    <PackageReference Include="DalamudPackager" Version="11.0.0" />
     <Reference Include="FFXIVClientStructs">
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
       <Private>false</Private>
