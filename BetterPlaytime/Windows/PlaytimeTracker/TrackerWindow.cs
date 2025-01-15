@@ -1,4 +1,4 @@
-using CheapLoc;
+using BetterPlaytime.Resources;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 
@@ -6,7 +6,7 @@ namespace BetterPlaytime.Windows.PlaytimeTracker;
 
 public class TrackerWindow : Window, IDisposable
 {
-    private Plugin Plugin;
+    private readonly Plugin Plugin;
 
     public TrackerWindow(Plugin plugin) : base("Playtime Tracker")
     {
@@ -23,19 +23,14 @@ public class TrackerWindow : Window, IDisposable
 
     public override void Draw()
     {
-        var total = Plugin.TimeManager.GetTotalPlaytime();
         if (Plugin.TimeManager.CheckIfCharacterIsUsed())
         {
             var character = Plugin.TimeManager.GetCurrentPlaytime();
-            ImGui.TextColored(ImGuiColors.HealerGreen,
-                $"{Loc.Localize("Tracker - On Character", "On Character")}: {(character != ""
-                    ? character
-                    : Loc.Localize("Tracker - Playtime under minute", "less than a minute"))}");
+            ImGui.TextColored(ImGuiColors.HealerGreen, $"{Language.OnCharacter}: {(character != "" ? character : Language.PlaytimeUnderMinute)}");
         }
-        ImGui.TextColored(ImGuiColors.HealerGreen,
-            $"{Loc.Localize("Tracker - Total Playtime", "Total:")} {(total != ""
-                ? total
-                : Loc.Localize("Tracker - Playtime under minute", "less than a minute"))}");
+
+        var total = Plugin.TimeManager.GetTotalPlaytime();
+        ImGui.TextColored(ImGuiColors.HealerGreen, $"{Language.TotalPlaytime} {(total != "" ? total : Language.PlaytimeUnderMinute)}");
 
         if (!Plugin.Configuration.ShowCharacter)
             return;
@@ -45,7 +40,7 @@ public class TrackerWindow : Window, IDisposable
             return;
 
         ImGuiHelpers.ScaledDummy(5.0f);
-        ImGui.Text(Loc.Localize("Tracker - Total Character Time", "Character Total:"));
+        ImGui.TextUnformatted(Language.TotalCharacterPlaytime);
         ImGui.TextColored(ImGuiColors.HealerGreen, current);
     }
 }

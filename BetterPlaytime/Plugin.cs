@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System.Globalization;
 using System.Runtime.InteropServices;
 using Dalamud.IoC;
 using Dalamud.Plugin;
@@ -6,6 +7,7 @@ using Dalamud.Game;
 using BetterPlaytime.Attributes;
 using BetterPlaytime.Data;
 using BetterPlaytime.Logic;
+using BetterPlaytime.Resources;
 using BetterPlaytime.Windows.Config;
 using BetterPlaytime.Windows.PlaytimeTracker;
 using Dalamud.Game.Text;
@@ -39,10 +41,8 @@ namespace BetterPlaytime
         public TrackerWindow TrackerWindow { get; init; }
 
         public readonly TimeManager TimeManager;
-        private readonly Localization Localization = new();
         private readonly ServerBar ServerBar;
 
-        private static ChatCommon Common = null!;
         private bool SendChatCommand;
 
         private readonly PluginCommandManager<Plugin> Commands;
@@ -50,6 +50,8 @@ namespace BetterPlaytime
         public Plugin()
         {
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+
+            LanguageChanged(PluginInterface.UiLanguage);
 
             TimeManager = new TimeManager(this);
             ServerBar = new ServerBar(this);
@@ -61,23 +63,45 @@ namespace BetterPlaytime
 
             Commands = new PluginCommandManager<Plugin>(this, CommandManager);
 
-            Localization.SetupWithLangCode(PluginInterface.UiLanguage);
-
             var playtimePtr = SigScanner.ScanText(PlaytimeSig);
             PlaytimeHook = Hook.HookFromAddress<PlaytimeDelegate>(playtimePtr, PlaytimePacket);
             PlaytimeHook.Enable();
 
             Chat.ChatMessage += OnChatMessage;
-            PluginInterface.UiBuilder.Draw += DrawUI;
-            PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-            PluginInterface.LanguageChanged += Localization.SetupWithLangCode;
+            PluginInterface.UiBuilder.Draw += DrawUi;
+            PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUi;
+            PluginInterface.LanguageChanged += LanguageChanged;
             ClientState.Login += OnLogin;
             ClientState.Logout += OnLogout;
 
-            Common = new ChatCommon();
-
             if (ClientState.IsLoggedIn)
                 Framework.Update += TimeTracker;
+        }
+
+        public void Dispose()
+        {
+            PlaytimeHook.Dispose();
+            WindowSystem.RemoveAllWindows();
+
+            PluginInterface.UiBuilder.Draw -= DrawUi;
+            PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUi;
+            PluginInterface.LanguageChanged -= LanguageChanged;
+
+            Chat.ChatMessage -= OnChatMessage;
+            ClientState.Login -= OnLogin;
+            ClientState.Logout -= OnLogout;
+            Framework.Update -= TimeTracker;
+            Framework.Update -= TimeManager.AutoSaveEvent;
+            Framework.Update -= ServerBar.UpdateTracker;
+
+            TimeManager.StopAutoSave();
+            Commands.Dispose();
+            ServerBar.Dispose();
+        }
+
+        private void LanguageChanged(string langCode)
+        {
+            Language.Culture = new CultureInfo(langCode);
         }
 
         [Command("/btime")]
@@ -120,7 +144,7 @@ namespace BetterPlaytime
         {
             // send playtime command after user uses btime command
             Log.Debug("Requesting playtime from server.");
-            Common.SendMessage("/playtime");
+            ChatBox.SendMessage("/playtime");
             SendChatCommand = true;
         }
 
@@ -192,7 +216,7 @@ namespace BetterPlaytime
         public static string GetLocalPlayerName()
         {
             var local = ClientState.LocalPlayer;
-            if (local == null || local.HomeWorld.ValueNullable == null)
+            if (local?.HomeWorld.ValueNullable == null)
                 return string.Empty;
 
             return $"{local.Name}\uE05D{local.HomeWorld.Value.Name}";
@@ -203,33 +227,12 @@ namespace BetterPlaytime
             Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         }
 
-        public void Dispose()
-        {
-            PlaytimeHook.Dispose();
-            WindowSystem.RemoveAllWindows();
-
-            PluginInterface.UiBuilder.Draw -= DrawUI;
-            PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUI;
-            PluginInterface.LanguageChanged -= Localization.SetupWithLangCode;
-
-            Chat.ChatMessage -= OnChatMessage;
-            ClientState.Login -= OnLogin;
-            ClientState.Logout -= OnLogout;
-            Framework.Update -= TimeTracker;
-            Framework.Update -= TimeManager.AutoSaveEvent;
-            Framework.Update -= ServerBar.UpdateTracker;
-
-            TimeManager.StopAutoSave();
-            Commands.Dispose();
-            ServerBar.Dispose();
-        }
-
-        private void DrawUI()
+        private void DrawUi()
         {
             WindowSystem.Draw();
         }
 
-        private void DrawConfigUI()
+        private void DrawConfigUi()
         {
             ConfigWindow.IsOpen = true;
         }

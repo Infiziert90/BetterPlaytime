@@ -1,7 +1,4 @@
 ﻿using Dalamud.Configuration;
-using Dalamud.Plugin;
-using System;
-using System.Collections.Generic;
 using BetterPlaytime.Data;
 
 namespace BetterPlaytime

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="OnCharacter" xml:space="preserve">
+        <value>On Character</value>
+    </data>
+    <data name="PlaytimeUnderMinute" xml:space="preserve">
+        <value>less than a minute</value>
+    </data>
+    <data name="TotalPlaytime" xml:space="preserve">
+        <value>Total:</value>
+    </data>
+    <data name="TotalCharacterPlaytime" xml:space="preserve">
+        <value>Character Total:</value>
+    </data>
+    <data name="SavedCharacterHeader" xml:space="preserve">
+        <value>Saved Character:</value>
+    </data>
+    <data name="FormattingHeader" xml:space="preserve">
+        <value>Formatting:</value>
+    </data>
+    <data name="DisplayNormal" xml:space="preserve">
+        <value>Normal</value>
+    </data>
+    <data name="TimeSeconds" xml:space="preserve">
+        <value>Seconds</value>
+    </data>
+    <data name="TimeMinutes" xml:space="preserve">
+        <value>Minutes</value>
+    </data>
+    <data name="TimeHours" xml:space="preserve">
+        <value>Hours</value>
+    </data>
+    <data name="TimeDays" xml:space="preserve">
+        <value>Days</value>
+    </data>
+    <data name="TimeDay" xml:space="preserve">
+        <value>Day</value>
+    </data>
+    <data name="TimeHour" xml:space="preserve">
+        <value>Hour</value>
+    </data>
+    <data name="TimeMinute" xml:space="preserve">
+        <value>Minute</value>
+    </data>
+    <data name="OutputHeader" xml:space="preserve">
+        <value>Character Output:</value>
+    </data>
+    <data name="ShowCurrentCharacter" xml:space="preserve">
+        <value>Show current character</value>
+    </data>
+    <data name="ShowOtherCharacter" xml:space="preserve">
+        <value>Show other characters</value>
+    </data>
+    <data name="ServerBarHeader" xml:space="preserve">
+        <value>Server Bar:</value>
+    </data>
+    <data name="Enabled" xml:space="preserve">
+        <value>Enabled</value>
+    </data>
+    <data name="AutoSaveHeader" xml:space="preserve">
+        <value>AutoSave:</value>
+    </data>
+    <data name="DisplayOptionHeader" xml:space="preserve">
+        <value>Display Option:</value>
+    </data>
+    <data name="CharacterNotRegistered" xml:space="preserve">
+        <value>Current character has yet to be logged, type /playtime to update.</value>
+    </data>
+    <data name="AllCharacterMessage" xml:space="preserve">
+        <value>Across all characters, you have played for</value>
+    </data>
+    <data name="TimeSecond" xml:space="preserve">
+        <value>Second</value>
+    </data>
+</root>

@@ -1,15 +1,23 @@
 ﻿using Dalamud.Interface.Utility;
+using Dalamud.Interface.Utility.Raii;
 
 namespace BetterPlaytime.Windows.Config;
 
 public partial class ConfigWindow
 {
+    private const float SeparatorPadding = 1.0f;
+    private static float GetSeparatorPaddingHeight => SeparatorPadding * ImGuiHelpers.GlobalScale;
+
     private static void About()
     {
-        if (ImGui.BeginTabItem("About"))
+        using var tabItem = ImRaii.TabItem("About");
+        if (!tabItem.Success)
+            return;
+
+        var buttonHeight = ImGui.GetFrameHeightWithSpacing() + ImGui.GetStyle().WindowPadding.Y + GetSeparatorPaddingHeight;
+        using (var contentChild = ImRaii.Child("AboutContent", new Vector2(0, -buttonHeight)))
         {
-            var buttonHeight = ImGui.CalcTextSize("R").Y + (20.0f * ImGuiHelpers.GlobalScale);
-            if (ImGui.BeginChild("AboutContent", new Vector2(0, -buttonHeight)))
+            if (contentChild)
             {
                 ImGuiHelpers.ScaledDummy(5.0f);
 
@@ -25,37 +33,35 @@ public partial class ConfigWindow
                 ImGui.SameLine();
                 ImGui.TextColored(ImGuiColors.ParsedOrange, Plugin.PluginInterface.Manifest.AssemblyVersion.ToString());
             }
+        }
 
-            ImGui.EndChild();
+        ImGui.Separator();
+        ImGuiHelpers.ScaledDummy(1.0f);
 
-            ImGui.Separator();
-            ImGuiHelpers.ScaledDummy(1.0f);
-
-            if (ImGui.BeginChild("AboutBottomBar", new Vector2(0, 0), false, 0))
+        using var bottomChild = ImRaii.Child("AboutBottomBar", new Vector2(0, 0), false, 0);
+        if (bottomChild)
+        {
+            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.ParsedBlue))
             {
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.ParsedBlue);
                 if (ImGui.Button("Discord Thread"))
-                    Dalamud.Utility.Util.OpenLink("https://canary.discord.com/channels/581875019861328007/1019677676883169350");
-                ImGui.PopStyleColor();
-
-                ImGui.SameLine();
-
-                ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.DPSRed);
-                if (ImGui.Button("Issues"))
-                    Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/BetterPlaytime/issues");
-                ImGui.PopStyleColor();
-
-                ImGui.SameLine();
-
-                ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.12549f, 0.74902f, 0.33333f, 0.6f));
-                if (ImGui.Button("Ko-Fi Tip"))
-                    Dalamud.Utility.Util.OpenLink("https://ko-fi.com/infiii");
-                ImGui.PopStyleColor();
+                    Dalamud.Utility.Util.OpenLink("https://discord.com/channels/581875019861328007/1019677676883169350");
             }
 
-            ImGui.EndChild();
+            ImGui.SameLine();
 
-            ImGui.EndTabItem();
+            using (ImRaii.PushColor(ImGuiCol.Button, ImGuiColors.DPSRed))
+            {
+                if (ImGui.Button("Issues"))
+                    Dalamud.Utility.Util.OpenLink("https://github.com/Infiziert90/BetterPlaytime/issues");
+            }
+
+            ImGui.SameLine();
+
+            using (ImRaii.PushColor(ImGuiCol.Button, new Vector4(0.12549f, 0.74902f, 0.33333f, 0.6f)))
+            {
+                if (ImGui.Button("Ko-Fi Tip"))
+                    Dalamud.Utility.Util.OpenLink("https://ko-fi.com/infiii");
+            }
         }
     }
 }

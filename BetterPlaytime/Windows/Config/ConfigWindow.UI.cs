@@ -1,5 +1,5 @@
-using CheapLoc;
-using Dalamud.Interface.Utility;
+using BetterPlaytime.Resources;
+using Dalamud.Interface.Utility.Raii;
 
 namespace BetterPlaytime.Windows.Config;
 
@@ -7,39 +7,18 @@ public partial class ConfigWindow
 {
     private void UI()
     {
-        if (!ImGui.BeginTabItem($"UI"))
+        using var tabItem = ImRaii.TabItem("UI");
+        if (!tabItem.Success)
             return;
 
-        var buttonHeight = ImGui.CalcTextSize("R").Y + (20.0f * ImGuiHelpers.GlobalScale);
-        if (ImGui.BeginChild("UIContent", new Vector2(0, -buttonHeight)))
+        ImGui.TextColored(ImGuiColors.DalamudViolet, Language.DisplayOptionHeader);
+
+        var showCharacter = Plugin.Configuration.ShowCharacter;
+        if (ImGui.Checkbox($"{Language.ShowCurrentCharacter}##UICurrentCharacter", ref showCharacter))
         {
-            ImGuiHelpers.ScaledDummy(5.0f);
-            ImGui.TextColored(ImGuiColors.DalamudViolet, Loc.Localize("Config - Display Header", "Display Option:"));
-
-            var showCharacter = Plugin.Configuration.ShowCharacter;
-            if (ImGui.Checkbox(
-                    $"{Loc.Localize("Config - Current Character", "Show current character")}##UICurrentCharacter",
-                    ref showCharacter))
-            {
-                Plugin.ReloadConfig();
-                Plugin.Configuration.ShowCharacter = showCharacter;
-                Plugin.Configuration.Save();
-            }
+            Plugin.ReloadConfig();
+            Plugin.Configuration.ShowCharacter = showCharacter;
+            Plugin.Configuration.Save();
         }
-        ImGui.EndChild();
-
-        ImGui.Separator();
-        ImGuiHelpers.ScaledDummy(1.0f);
-
-        if (ImGui.BeginChild("UIBottomBar", new Vector2(0, 0), false, 0))
-        {
-            ImGui.PushStyleColor(ImGuiCol.Button, ImGuiColors.TankBlue);
-            if (ImGui.Button("Playtime"))
-                Dalamud.Utility.Util.OpenLink("https://ko-fi.com/infiii");
-            ImGui.PopStyleColor();
-        }
-        ImGui.EndChild();
-
-        ImGui.EndTabItem();
     }
 }

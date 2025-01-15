@@ -1,7 +1,7 @@
 #nullable enable
 using System.Diagnostics;
 using BetterPlaytime.Data;
-using CheapLoc;
+using BetterPlaytime.Resources;
 using Dalamud.Plugin.Services;
 
 namespace BetterPlaytime.Logic;
@@ -34,7 +34,7 @@ public class TimeManager
         if (currentChar == null)
         {
             // Impossible to reach?
-            Plugin.Chat.Print(Loc.Localize("Chat - Not registered", "Current character has yet to be logged, type /playtime to update."));
+            Plugin.Chat.Print(Language.CharacterNotRegistered);
             return;
         }
 
@@ -57,7 +57,7 @@ public class TimeManager
         }
 
         if (Plugin.Configuration.StoredPlaytimes.Count > 1)
-            Plugin.Chat.Print($"{Loc.Localize("Chat - All characters", "Across all characters, you have played for")}: {GeneratePlaytime(totalPlaytime)}");
+            Plugin.Chat.Print($"{Language.AllCharacterMessage}: {GeneratePlaytime(totalPlaytime)}");
     }
 
     private string GeneratePlaytime(TimeSpan time, bool withSeconds = false)
@@ -65,10 +65,10 @@ public class TimeManager
         return Plugin.Configuration.TimeOption switch
         {
             TimeOptions.Normal => GeneratePlaytimeString(time, withSeconds),
-            TimeOptions.Seconds => $"{time.TotalSeconds:n0} {Loc.Localize("Time - Seconds", "Seconds")}",
-            TimeOptions.Minutes => $"{time.TotalMinutes:n0} {Loc.Localize("Time - Minutes", "Minutes")}",
-            TimeOptions.Hours => $"{time.TotalHours:n2} {Loc.Localize("Time - Hours", "Hours")}",
-            TimeOptions.Days => $"{time.TotalDays:n2} {Loc.Localize("Time - Days", "Days")}",
+            TimeOptions.Seconds => $"{time.TotalSeconds:n0} {Language.TimeSeconds}",
+            TimeOptions.Minutes => $"{time.TotalMinutes:n0} {Language.TimeMinutes}",
+            TimeOptions.Hours => $"{time.TotalHours:n2} {Language.TimeHours}",
+            TimeOptions.Days => $"{time.TotalDays:n2} {Language.TimeDays}",
             _ => GeneratePlaytimeString(time, withSeconds)
         };
     }
@@ -76,12 +76,12 @@ public class TimeManager
     private static string GeneratePlaytimeString(TimeSpan time, bool withSeconds = false)
     {
         var formatted =
-            $"{(time.Days > 0 ? $"{time.Days:n0} {(time.Days == 1 ? Loc.Localize("Time - Day", "Day") : Loc.Localize("Time - Days", "Days"))}, " : string.Empty)}" +
-            $"{(time.Hours > 0 ? $"{time.Hours:n0} {(time.Hours == 1 ? Loc.Localize("Time - Hour", "Hour") : Loc.Localize("Time - Hours", "Hours"))}, " : string.Empty)}" +
-            $"{(time.Minutes > 0 ? $"{time.Minutes:n0} {(time.Minutes == 1 ? Loc.Localize("Time - Minute", "Minute") : Loc.Localize("Time - Minutes", "Minutes"))}, " : string.Empty)}";
+            $"{(time.Days > 0 ? $"{time.Days:n0} {(time.Days == 1 ? Language.TimeDay : Language.TimeDays)}, " : string.Empty)}" +
+            $"{(time.Hours > 0 ? $"{time.Hours:n0} {(time.Hours == 1 ? Language.TimeHour : Language.TimeHours)}, " : string.Empty)}" +
+            $"{(time.Minutes > 0 ? $"{time.Minutes:n0} {(time.Minutes == 1 ? Language.TimeMinute : Language.TimeMinutes)}, " : string.Empty)}";
 
         if (withSeconds)
-            formatted += $"{time.Seconds:n0} {(time.Seconds == 1 ? Loc.Localize("Time - Second", "Second") : Loc.Localize("Time - Seconds", "Seconds"))}";
+            formatted += $"{time.Seconds:n0} {(time.Seconds == 1 ? Language.TimeSecond : Language.TimeSeconds)}";
 
         if (formatted.EndsWith(", "))
             formatted = formatted[..^2];

@@ -3,8 +3,7 @@
   <PropertyGroup>
     <Authors>Infi</Authors>
     <AssemblyName>BetterPlaytime</AssemblyName>
-    <AssemblyVersion>1.4.1.1</AssemblyVersion>
-    <Version>1.4.1.0</Version>
+    <Version>1.4.1.1</Version>
     <Description>Provides expanded functionality to seamlessly track total playtime.
       Use /btime once on each character to add them.
 
@@ -27,7 +26,6 @@
     <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputType>Library</OutputType>
-    <OutputPath>..\builds\$(Configuration)\</OutputPath>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
@@ -65,10 +63,6 @@
       <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="ImGuiScene">
-      <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
     <Reference Include="Lumina">
       <HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
       <Private>false</Private>
@@ -77,12 +71,20 @@
       <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="CheapLoc">
-      <HintPath>$(DalamudLibPath)CheapLoc.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
   </ItemGroup>
-  <Target Name="PackagePlugin" AfterTargets="Build">
-    <DalamudPackager ProjectDir="$(ProjectDir)" OutputPath="$(OutputPath)" AssemblyName="$(AssemblyName)" />
-  </Target>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Language.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Language.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Language.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Language.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

@@ -1,14 +1,13 @@
-using System.IO;
-using CheapLoc;
+using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 
 namespace BetterPlaytime.Windows.Config;
 
 public partial class ConfigWindow : Window, IDisposable
 {
-    private Plugin Plugin;
+    private readonly Plugin Plugin;
 
-    public ConfigWindow(Plugin plugin) : base("Configuration")
+    public ConfigWindow(Plugin plugin) : base("Configuration##BetterPlaytime")
     {
         SizeConstraints = new WindowSizeConstraints
         {
@@ -25,37 +24,16 @@ public partial class ConfigWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (ImGui.BeginTabBar("##ConfigTabBar"))
-        {
-            General();
-
-            UI();
-
-            Characters();
-
-            About();
-
-            #if DEBUG
-            DebugTab();
-            #endif
-
-            ImGui.EndTabBar();
-        }
-    }
-
-    private static void DebugTab()
-    {
-        if (!ImGui.BeginTabItem($"Debug##debug-tab"))
+        using var tabBar = ImRaii.TabBar("##ConfigTabBar");
+        if (!tabBar.Success)
             return;
 
-        if(ImGui.Button("Export Loc"))
-        {
-            var pwd = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory(Plugin.PluginInterface!.AssemblyLocation.DirectoryName!);
-            Loc.ExportLocalizable();
-            Directory.SetCurrentDirectory(pwd);
-        }
+        General();
 
-        ImGui.EndTabItem();
+        UI();
+
+        Characters();
+
+        About();
     }
 }
