@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Infi</Authors>
     <AssemblyName>BetterPlaytime</AssemblyName>
-    <Version>1.4.1.1</Version>
+    <Version>1.4.1.2</Version>
     <Description>Provides expanded functionality to seamlessly track total playtime.
       Use /btime once on each character to add them.
 
