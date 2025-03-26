@@ -15,226 +15,219 @@ using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Hooking;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.UI;
 
-namespace BetterPlaytime
+namespace BetterPlaytime;
+
+public sealed class Plugin : IDalamudPlugin
 {
-    public sealed class Plugin : IDalamudPlugin
+    [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
+    [PluginService] public static IClientState ClientState { get; private set; } = null!;
+    [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
+    [PluginService] public static IChatGui Chat { get; private set; } = null!;
+    [PluginService] public static IFramework Framework { get; private set; } = null!;
+    [PluginService] public static IDtrBar DtrBar { get; private set; } = null!;
+    [PluginService] public static ISigScanner SigScanner { get; private set; } = null!;
+    [PluginService] public static IPluginLog Log { get; private set; } = null!;
+    [PluginService] public static IGameInteropProvider Hook { get; private set; } = null!;
+
+    private Hook<UIModule.Delegates.HandlePacket> PlaytimeHook;
+
+    public Configuration Configuration { get; set; }
+    private WindowSystem WindowSystem = new("BetterPlaytime");
+
+    private ConfigWindow ConfigWindow { get; init; }
+    public TrackerWindow TrackerWindow { get; init; }
+
+    public readonly TimeManager TimeManager;
+    private readonly ServerBar ServerBar;
+
+    private bool SendChatCommand;
+
+    private readonly PluginCommandManager<Plugin> Commands;
+
+    public unsafe Plugin()
     {
-        [PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-        [PluginService] public static IClientState ClientState { get; private set; } = null!;
-        [PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
-        [PluginService] public static IChatGui Chat { get; private set; } = null!;
-        [PluginService] public static IFramework Framework { get; private set; } = null!;
-        [PluginService] public static IDtrBar DtrBar { get; private set; } = null!;
-        [PluginService] public static ISigScanner SigScanner { get; private set; } = null!;
-        [PluginService] public static IPluginLog Log { get; private set; } = null!;
-        [PluginService] public static IGameInteropProvider Hook { get; private set; } = null!;
+        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
-        private const string PlaytimeSig = "E8 ?? ?? ?? ?? B9 ?? ?? ?? ?? 48 8B D3";
-        private delegate long PlaytimeDelegate(uint param1, long minutes, uint param3);
-        private Hook<PlaytimeDelegate> PlaytimeHook;
+        LanguageChanged(PluginInterface.UiLanguage);
 
-        public Configuration Configuration { get; set; }
-        private WindowSystem WindowSystem = new("BetterPlaytime");
+        TimeManager = new TimeManager(this);
+        ServerBar = new ServerBar(this);
 
-        private ConfigWindow ConfigWindow { get; init; }
-        public TrackerWindow TrackerWindow { get; init; }
+        ConfigWindow = new ConfigWindow(this);
+        TrackerWindow = new TrackerWindow(this);
+        WindowSystem.AddWindow(ConfigWindow);
+        WindowSystem.AddWindow(TrackerWindow);
 
-        public readonly TimeManager TimeManager;
-        private readonly ServerBar ServerBar;
+        Commands = new PluginCommandManager<Plugin>(this, CommandManager);
 
-        private bool SendChatCommand;
+        PlaytimeHook = Hook.HookFromAddress<UIModule.Delegates.HandlePacket>(UIModule.StaticVirtualTablePointer->HandlePacket, PlaytimePacket);
+        PlaytimeHook.Enable();
 
-        private readonly PluginCommandManager<Plugin> Commands;
+        Chat.ChatMessage += OnChatMessage;
+        PluginInterface.UiBuilder.Draw += DrawUi;
+        PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUi;
+        PluginInterface.LanguageChanged += LanguageChanged;
+        ClientState.Login += OnLogin;
+        ClientState.Logout += OnLogout;
 
-        public Plugin()
-        {
-            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-
-            LanguageChanged(PluginInterface.UiLanguage);
-
-            TimeManager = new TimeManager(this);
-            ServerBar = new ServerBar(this);
-
-            ConfigWindow = new ConfigWindow(this);
-            TrackerWindow = new TrackerWindow(this);
-            WindowSystem.AddWindow(ConfigWindow);
-            WindowSystem.AddWindow(TrackerWindow);
-
-            Commands = new PluginCommandManager<Plugin>(this, CommandManager);
-
-            var playtimePtr = SigScanner.ScanText(PlaytimeSig);
-            PlaytimeHook = Hook.HookFromAddress<PlaytimeDelegate>(playtimePtr, PlaytimePacket);
-            PlaytimeHook.Enable();
-
-            Chat.ChatMessage += OnChatMessage;
-            PluginInterface.UiBuilder.Draw += DrawUi;
-            PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUi;
-            PluginInterface.LanguageChanged += LanguageChanged;
-            ClientState.Login += OnLogin;
-            ClientState.Logout += OnLogout;
-
-            if (ClientState.IsLoggedIn)
-                Framework.Update += TimeTracker;
-        }
-
-        public void Dispose()
-        {
-            PlaytimeHook.Dispose();
-            WindowSystem.RemoveAllWindows();
-
-            PluginInterface.UiBuilder.Draw -= DrawUi;
-            PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUi;
-            PluginInterface.LanguageChanged -= LanguageChanged;
-
-            Chat.ChatMessage -= OnChatMessage;
-            ClientState.Login -= OnLogin;
-            ClientState.Logout -= OnLogout;
-            Framework.Update -= TimeTracker;
-            Framework.Update -= TimeManager.AutoSaveEvent;
-            Framework.Update -= ServerBar.UpdateTracker;
-
-            TimeManager.StopAutoSave();
-            Commands.Dispose();
-            ServerBar.Dispose();
-        }
-
-        private void LanguageChanged(string langCode)
-        {
-            Language.Culture = new CultureInfo(langCode);
-        }
-
-        [Command("/btime")]
-        [Aliases("/betterplaytime")]
-        [HelpMessage("Outputs playtime\nArguments:\nconfig - Toggles config window\nui - Toggles session playtime window")]
-        public void PluginCommand(string command, string args)
-        {
-            switch (args)
-            {
-                case "config":
-                    ConfigWindow.IsOpen ^= true;
-                    break;
-                case "ui":
-                    TrackerWindow.IsOpen ^= true;
-                    break;
-                default:
-                    PlaytimeCommand();
-                    break;
-            }
-        }
-
-        private void OnLogin()
-        {
-            Log.Debug("Login");
+        if (ClientState.IsLoggedIn)
             Framework.Update += TimeTracker;
-        }
+    }
 
-        private void OnLogout(int _, int __)
+    public void Dispose()
+    {
+        PlaytimeHook.Dispose();
+        WindowSystem.RemoveAllWindows();
+
+        PluginInterface.UiBuilder.Draw -= DrawUi;
+        PluginInterface.UiBuilder.OpenConfigUi -= DrawConfigUi;
+        PluginInterface.LanguageChanged -= LanguageChanged;
+
+        Chat.ChatMessage -= OnChatMessage;
+        ClientState.Login -= OnLogin;
+        ClientState.Logout -= OnLogout;
+        Framework.Update -= TimeTracker;
+        Framework.Update -= TimeManager.AutoSaveEvent;
+        Framework.Update -= ServerBar.UpdateTracker;
+
+        TimeManager.StopAutoSave();
+        Commands.Dispose();
+        ServerBar.Dispose();
+    }
+
+    private void LanguageChanged(string langCode)
+    {
+        Language.Culture = new CultureInfo(langCode);
+    }
+
+    [Command("/btime")]
+    [Aliases("/betterplaytime")]
+    [HelpMessage("Outputs playtime\nArguments:\nconfig - Toggles config window\nui - Toggles session playtime window")]
+    public void PluginCommand(string command, string args)
+    {
+        switch (args)
         {
-            Log.Debug("Logout");
-            Framework.Update -= TimeTracker;
-            Framework.Update -= TimeManager.AutoSaveEvent;
-
-            TimeManager.ShutdownTimers();
-            TimeManager.StopAutoSave();
-            TimeManager.PlayerName = string.Empty;
+            case "config":
+                ConfigWindow.IsOpen ^= true;
+                break;
+            case "ui":
+                TrackerWindow.IsOpen ^= true;
+                break;
+            default:
+                PlaytimeCommand();
+                break;
         }
+    }
 
-        private void PlaytimeCommand()
-        {
-            // send playtime command after user uses btime command
-            Log.Debug("Requesting playtime from server.");
-            ChatBox.SendMessage("/playtime");
-            SendChatCommand = true;
-        }
+    private void OnLogin()
+    {
+        Log.Debug("Login");
+        Framework.Update += TimeTracker;
+    }
 
-        private void TimeTracker(IFramework framework)
-        {
-            if (ClientState.LocalPlayer == null)
-                return;
+    private void OnLogout(int _, int __)
+    {
+        Log.Debug("Logout");
+        Framework.Update -= TimeTracker;
+        Framework.Update -= TimeManager.AutoSaveEvent;
 
-            Log.Debug("Checking for player name");
-            if (TimeManager.PlayerName != string.Empty)
-                return;
+        TimeManager.ShutdownTimers();
+        TimeManager.StopAutoSave();
+        TimeManager.PlayerName = string.Empty;
+    }
 
-            TimeManager.PlayerName = GetLocalPlayerName();
-            Log.Debug($"New Name: {TimeManager.PlayerName}");
-            TimeManager.StartTimer();
+    private void PlaytimeCommand()
+    {
+        // send playtime command after user uses btime command
+        Log.Debug("Requesting playtime from server.");
+        ChatBox.SendMessage("/playtime");
+        SendChatCommand = true;
+    }
 
-            Framework.Update -= TimeTracker;
+    private void TimeTracker(IFramework framework)
+    {
+        if (ClientState.LocalPlayer == null)
+            return;
 
-            TimeManager.StartAutoSave();
-            Framework.Update += TimeManager.AutoSaveEvent;
-            Framework.Update += ServerBar.UpdateTracker;
-        }
+        Log.Debug("Checking for player name");
+        if (TimeManager.PlayerName != string.Empty)
+            return;
 
-        private long PlaytimePacket(uint param1, long minutes, uint param3)
-        {
-            var result = PlaytimeHook.Original(param1, minutes, param3);
-            if (param1 != 11)
-                return result;
+        TimeManager.PlayerName = GetLocalPlayerName();
+        Log.Debug($"New Name: {TimeManager.PlayerName}");
+        TimeManager.StartTimer();
 
-            var playerName = GetLocalPlayerName();
-            if (playerName == string.Empty)
-                return result;
+        Framework.Update -= TimeTracker;
 
-            Log.Debug($"Extracted Player Name: {playerName}.");
+        TimeManager.StartAutoSave();
+        Framework.Update += TimeManager.AutoSaveEvent;
+        Framework.Update += ServerBar.UpdateTracker;
+    }
 
-            var totalPlaytime = (uint) Marshal.ReadInt32((nint) minutes + 0x10);
-            Log.Debug($"Value from address {totalPlaytime}");
-            var playtime = TimeSpan.FromMinutes(totalPlaytime);
-            Log.Debug($"{playtime}");
+    private unsafe void PlaytimePacket(UIModule* thisPtr, UIModulePacketType type, uint uintParam, void* packet)
+    {
+        PlaytimeHook.Original(thisPtr, type, uintParam, packet);
 
-            ReloadConfig();
-            if (Configuration.StoredPlaytimes.Any())
-                Configuration.StoredPlaytimes.RemoveAll(x => x.Playername == playerName);
+        if (type != UIModulePacketType.PrintPlayTime)
+            return;
 
-            Configuration.StoredPlaytimes.Add(new Playtime(playerName, playtime));
-            Configuration.Save();
+        var playerName = GetLocalPlayerName();
+        if (playerName == string.Empty)
+            return;
 
-            TimeManager.RestartAutoSave();
+        Log.Debug($"Extracted Player Name: {playerName}.");
 
-            return result;
-        }
+        var totalPlaytime = (uint) Marshal.ReadInt32((nint) packet + 0x10);
+        Log.Debug($"Value from address {totalPlaytime}");
+        var playtime = TimeSpan.FromMinutes(totalPlaytime);
+        Log.Debug($"{playtime}");
 
-        private void OnChatMessage(XivChatType type, int _, ref SeString sender, ref SeString message, ref bool handled)
-        {
-            if (type != XivChatType.SystemMessage)
-                return;
+        ReloadConfig();
+        if (Configuration.StoredPlaytimes.Any())
+            Configuration.StoredPlaytimes.RemoveAll(x => x.Playername == playerName);
 
-            if (!SendChatCommand)
-                return;
+        Configuration.StoredPlaytimes.Add(new Playtime(playerName, playtime));
+        Configuration.Save();
 
-            // plugin requested this message, so don't show it in chat
-            SendChatCommand = false;
-            handled = true;
+        TimeManager.RestartAutoSave();
+    }
 
-            // continue /btime command
-            TimeManager.PrintPlaytime();
-        }
+    private void OnChatMessage(XivChatType type, int _, ref SeString sender, ref SeString message, ref bool handled)
+    {
+        if (type != XivChatType.SystemMessage)
+            return;
 
-        public static string GetLocalPlayerName()
-        {
-            var local = ClientState.LocalPlayer;
-            if (local?.HomeWorld.ValueNullable == null)
-                return string.Empty;
+        if (!SendChatCommand)
+            return;
 
-            return $"{local.Name}\uE05D{local.HomeWorld.Value.Name}";
-        }
+        // plugin requested this message, so don't show it in chat
+        SendChatCommand = false;
+        handled = true;
 
-        public void ReloadConfig()
-        {
-            Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-        }
+        // continue /btime command
+        TimeManager.PrintPlaytime();
+    }
 
-        private void DrawUi()
-        {
-            WindowSystem.Draw();
-        }
+    public static string GetLocalPlayerName()
+    {
+        var local = ClientState.LocalPlayer;
+        return local?.HomeWorld.ValueNullable == null ? string.Empty : $"{local.Name}\uE05D{local.HomeWorld.Value.Name}";
+    }
 
-        private void DrawConfigUi()
-        {
-            ConfigWindow.IsOpen = true;
-        }
+    public void ReloadConfig()
+    {
+        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+    }
+
+    private void DrawUi()
+    {
+        WindowSystem.Draw();
+    }
+
+    private void DrawConfigUi()
+    {
+        ConfigWindow.IsOpen = true;
     }
 }
