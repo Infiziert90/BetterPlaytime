@@ -1,14 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>1.3</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OnCharacter" xml:space="preserve">
+        <value>このキャラクター</value>
+    </data>
+  <data name="PlaytimeUnderMinute" xml:space="preserve">
+        <value>まだ１分足りでいません</value>
+    </data>
+  <data name="TotalPlaytime" xml:space="preserve">
+        <value>合計：</value>
+    </data>
+  <data name="TotalCharacterPlaytime" xml:space="preserve">
+        <value>キャラクター合計：</value>
+    </data>
+  <data name="SavedCharacterHeader" xml:space="preserve">
+        <value>保存されたキャラクター：</value>
+    </data>
+  <data name="FormattingHeader" xml:space="preserve">
+        <value>初期化中：</value>
+    </data>
+  <data name="DisplayNormal" xml:space="preserve">
+        <value>ノーマル</value>
+    </data>
+  <data name="TimeSeconds" xml:space="preserve">
+        <value>秒</value>
+    </data>
+  <data name="TimeMinutes" xml:space="preserve">
+        <value>分</value>
+    </data>
+  <data name="TimeHours" xml:space="preserve">
+        <value>時</value>
+    </data>
+  <data name="TimeDays" xml:space="preserve">
+        <value>日</value>
+    </data>
+  <data name="TimeDay" xml:space="preserve">
+        <value>日</value>
+    </data>
+  <data name="TimeHour" xml:space="preserve">
+        <value>時</value>
+    </data>
+  <data name="TimeMinute" xml:space="preserve">
+        <value>分</value>
+    </data>
+  <data name="OutputHeader" xml:space="preserve">
+        <value>キャラクター出力：</value>
+    </data>
+  <data name="ShowCurrentCharacter" xml:space="preserve">
+        <value>今のキャラクターを展示する</value>
+    </data>
+  <data name="ShowOtherCharacter" xml:space="preserve">
+        <value>他のキャラクターを展示する</value>
+    </data>
+  <data name="ServerBarHeader" xml:space="preserve">
+        <value>サーバ：</value>
+    </data>
+  <data name="Enabled" xml:space="preserve">
+        <value>有効</value>
+    </data>
+  <data name="AutoSaveHeader" xml:space="preserve">
+        <value>オートセーブ：</value>
+    </data>
+  <data name="DisplayOptionHeader" xml:space="preserve">
+        <value>ディスプレイオプション：</value>
+    </data>
+  <data name="CharacterNotRegistered" xml:space="preserve">
+        <value>今のキャラクターはまだ記録されてない、更新のために/playtimeを入力してください。</value>
+    </data>
+  <data name="AllCharacterMessage" xml:space="preserve">
+        <value>全てのキャラクターの合計プレイ時間は</value>
+    </data>
+  <data name="TimeSecond" xml:space="preserve">
+        <value>秒</value>
+    </data>
 </root>

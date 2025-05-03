@@ -1,86 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>1.3</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <data name="OnCharacter" xml:space="preserve">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OnCharacter" xml:space="preserve">
         <value>Dieser Charakter</value>
     </data>
-    <data name="PlaytimeUnderMinute" xml:space="preserve">
+  <data name="PlaytimeUnderMinute" xml:space="preserve">
         <value>weniger als eine Minute</value>
     </data>
-    <data name="TotalPlaytime" xml:space="preserve">
+  <data name="TotalPlaytime" xml:space="preserve">
         <value>Gesamt:</value>
     </data>
-    <data name="TotalCharacterPlaytime" xml:space="preserve">
+  <data name="TotalCharacterPlaytime" xml:space="preserve">
         <value>Charakter insgesamt:</value>
     </data>
-    <data name="TimeSeconds" xml:space="preserve">
-        <value>Sekunden</value>
-    </data>
-    <data name="TimeMinutes" xml:space="preserve">
-        <value>Minuten</value>
-    </data>
-    <data name="TimeHours" xml:space="preserve">
-        <value>Stunden</value>
-    </data>
-    <data name="TimeDays" xml:space="preserve">
-        <value>Tage</value>
-    </data>
-    <data name="TimeDay" xml:space="preserve">
-        <value>Tag</value>
-    </data>
-    <data name="TimeHour" xml:space="preserve">
-        <value>Stunde</value>
-    </data>
-    <data name="TimeMinute" xml:space="preserve">
-        <value>Minute</value>
-    </data>
-    <data name="ServerBarHeader" xml:space="preserve">
-        <value>Server-Leiste:</value>
-    </data>
-    <data name="Enabled" xml:space="preserve">
-        <value>Aktiviert</value>
-    </data>
-    <data name="AutoSaveHeader" xml:space="preserve">
-        <value>Automatisches Speichern:</value>
-    </data>
-    <data name="DisplayOptionHeader" xml:space="preserve">
-        <value>Anzeige Optionen:</value>
-    </data>
-    <data name="CharacterNotRegistered" xml:space="preserve">
-        <value>Dein aktueller Charakter ist noch nicht registriert, benutze /playtime einmalig.</value>
-    </data>
-    <data name="AllCharacterMessage" xml:space="preserve">
-        <value>Deine Spielzeit für alle Charaktere ist</value>
-    </data>
-    <data name="DisplayNormal" xml:space="preserve">
-        <value>Normal</value>
-    </data>
-    <data name="FormattingHeader" xml:space="preserve">
-        <value>Formatierung:</value>
-    </data>
-    <data name="OutputHeader" xml:space="preserve">
-        <value>Charakter Ausgabe:</value>
-    </data>
-    <data name="SavedCharacterHeader" xml:space="preserve">
+  <data name="SavedCharacterHeader" xml:space="preserve">
         <value>Gespeicherte Charaktere:</value>
     </data>
-    <data name="ShowCurrentCharacter" xml:space="preserve">
+  <data name="FormattingHeader" xml:space="preserve">
+        <value>Formatierung:</value>
+    </data>
+  <data name="DisplayNormal" xml:space="preserve">
+        <value>Normal</value>
+    </data>
+  <data name="TimeSeconds" xml:space="preserve">
+        <value>Sekunden</value>
+    </data>
+  <data name="TimeMinutes" xml:space="preserve">
+        <value>Minuten</value>
+    </data>
+  <data name="TimeHours" xml:space="preserve">
+        <value>Stunden</value>
+    </data>
+  <data name="TimeDays" xml:space="preserve">
+        <value>Tage</value>
+    </data>
+  <data name="TimeDay" xml:space="preserve">
+        <value>Tag</value>
+    </data>
+  <data name="TimeHour" xml:space="preserve">
+        <value>Stunde</value>
+    </data>
+  <data name="TimeMinute" xml:space="preserve">
+        <value>Minute</value>
+    </data>
+  <data name="OutputHeader" xml:space="preserve">
+        <value>Charakter Ausgabe:</value>
+    </data>
+  <data name="ShowCurrentCharacter" xml:space="preserve">
         <value>Zeige aktuellen Charakter</value>
     </data>
-    <data name="ShowOtherCharacter" xml:space="preserve">
+  <data name="ShowOtherCharacter" xml:space="preserve">
         <value>Zeige andere Charaktere</value>
     </data>
-    <data name="TimeSecond" xml:space="preserve">
+  <data name="ServerBarHeader" xml:space="preserve">
+        <value>Server-Leiste:</value>
+    </data>
+  <data name="Enabled" xml:space="preserve">
+        <value>Aktiviert</value>
+    </data>
+  <data name="AutoSaveHeader" xml:space="preserve">
+        <value>Automatisches Speichern:</value>
+    </data>
+  <data name="DisplayOptionHeader" xml:space="preserve">
+        <value>Anzeige Optionen:</value>
+    </data>
+  <data name="CharacterNotRegistered" xml:space="preserve">
+        <value>Dein aktueller Charakter ist noch nicht registriert, benutze /playtime einmalig.</value>
+    </data>
+  <data name="AllCharacterMessage" xml:space="preserve">
+        <value>Deine Spielzeit für alle Charaktere ist</value>
+    </data>
+  <data name="TimeSecond" xml:space="preserve">
         <value>Sekunde</value>
     </data>
 </root>

@@ -1,65 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-    <resheader name="resmimetype">
-        <value>text/microsoft-resx</value>
-    </resheader>
-    <resheader name="version">
-        <value>1.3</value>
-    </resheader>
-    <resheader name="reader">
-        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <resheader name="writer">
-        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-    </resheader>
-    <data name="OnCharacter" xml:space="preserve">
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OnCharacter" xml:space="preserve">
         <value>Sur le personnage</value>
     </data>
-    <data name="PlaytimeUnderMinute" xml:space="preserve">
-        <value>moins d'une minute</value>
+  <data name="PlaytimeUnderMinute" xml:space="preserve">
+        <value>Moins d'une minute</value>
     </data>
-    <data name="TotalPlaytime" xml:space="preserve">
+  <data name="TotalPlaytime" xml:space="preserve">
         <value>Total :</value>
     </data>
-    <data name="TotalCharacterPlaytime" xml:space="preserve">
+  <data name="TotalCharacterPlaytime" xml:space="preserve">
         <value>Total du personnage :</value>
     </data>
-    <data name="TimeMinute" xml:space="preserve">
-        <value>Minute</value>
+  <data name="SavedCharacterHeader" xml:space="preserve">
+        <value>Personnage enregistré :</value>
     </data>
-    <data name="TimeHour" xml:space="preserve">
-        <value>Heure</value>
+  <data name="FormattingHeader" xml:space="preserve">
+        <value>Formatage :</value>
     </data>
-    <data name="TimeDay" xml:space="preserve">
-        <value>Jour</value>
+  <data name="DisplayNormal" xml:space="preserve">
+        <value>Normal</value>
     </data>
-    <data name="TimeDays" xml:space="preserve">
-        <value>Jours</value>
-    </data>
-    <data name="TimeHours" xml:space="preserve">
-        <value>Heures</value>
-    </data>
-    <data name="TimeMinutes" xml:space="preserve">
-        <value>Minutes</value>
-    </data>
-    <data name="TimeSeconds" xml:space="preserve">
+  <data name="TimeSeconds" xml:space="preserve">
         <value>Secondes</value>
     </data>
-    <data name="ServerBarHeader" xml:space="preserve">
-        <value>Barre de serveur:</value>
+  <data name="TimeMinutes" xml:space="preserve">
+        <value>Minutes</value>
     </data>
-    <data name="Enabled" xml:space="preserve">
+  <data name="TimeHours" xml:space="preserve">
+        <value>Heures</value>
+    </data>
+  <data name="TimeDays" xml:space="preserve">
+        <value>Jours</value>
+    </data>
+  <data name="TimeDay" xml:space="preserve">
+        <value>Jour</value>
+    </data>
+  <data name="TimeHour" xml:space="preserve">
+        <value>Heure</value>
+    </data>
+  <data name="TimeMinute" xml:space="preserve">
+        <value>Minute</value>
+    </data>
+  <data name="OutputHeader" xml:space="preserve">
+        <value>Sortie du personnage :</value>
+    </data>
+  <data name="ShowCurrentCharacter" xml:space="preserve">
+        <value>Afficher le personnage actuel</value>
+    </data>
+  <data name="ShowOtherCharacter" xml:space="preserve">
+        <value>Afficher les autres personnages</value>
+    </data>
+  <data name="ServerBarHeader" xml:space="preserve">
+        <value>Barre de serveur :</value>
+    </data>
+  <data name="Enabled" xml:space="preserve">
         <value>Activé</value>
     </data>
-    <data name="AutoSaveHeader" xml:space="preserve">
+  <data name="AutoSaveHeader" xml:space="preserve">
         <value>Sauvegarde auto. :</value>
     </data>
-    <data name="DisplayOptionHeader" xml:space="preserve">
+  <data name="DisplayOptionHeader" xml:space="preserve">
         <value>Option d'affichage :</value>
     </data>
-    <data name="CharacterNotRegistered" xml:space="preserve">
+  <data name="CharacterNotRegistered" xml:space="preserve">
         <value>Le personnage actuel n'est pas encore enregistré, veuillez écrire /playtime pour le mettre à jour.</value>
     </data>
-    <data name="AllCharacterMessage" xml:space="preserve">
+  <data name="AllCharacterMessage" xml:space="preserve">
         <value>À travers tous les personnages, vous avez joué pendant</value>
+    </data>
+  <data name="TimeSecond" xml:space="preserve">
+        <value>Seconde</value>
     </data>
 </root>
