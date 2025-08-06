@@ -1,3 +1,4 @@
+using Dalamud.Game.Addon.Events.EventDataTypes;
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Plugin.Services;
 
@@ -20,6 +21,15 @@ public class ServerBar
         DtrEntry.Text = "Playtime...";
         DtrEntry.Shown = false;
         DtrEntry.OnClick += OnClick;
+    }
+
+    public void Dispose()
+    {
+        if (DtrEntry == null)
+            return;
+
+        DtrEntry.OnClick -= OnClick;
+        DtrEntry.Remove();
     }
 
     public void UpdateTracker(IFramework framework)
@@ -48,18 +58,9 @@ public class ServerBar
 
     private void UpdateVisibility(bool shown) => DtrEntry.Shown = shown;
 
-    private void OnClick()
+    private void OnClick(AddonMouseEventData data)
     {
         Plugin.Configuration.FullPlaytimeInDtr ^= true;
         Plugin.Configuration.Save();
-    }
-
-    public void Dispose()
-    {
-        if (DtrEntry == null)
-            return;
-
-        DtrEntry.OnClick -= OnClick;
-        DtrEntry.Remove();
     }
 }
