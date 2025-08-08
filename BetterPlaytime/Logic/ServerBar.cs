@@ -1,4 +1,3 @@
-using Dalamud.Game.Addon.Events.EventDataTypes;
 using Dalamud.Game.Gui.Dtr;
 using Dalamud.Plugin.Services;
 
@@ -58,7 +57,7 @@ public class ServerBar
 
     private void UpdateVisibility(bool shown) => DtrEntry.Shown = shown;
 
-    private void OnClick(AddonMouseEventData data)
+    private void OnClick(DtrInteractionEvent data)
     {
         Plugin.Configuration.FullPlaytimeInDtr ^= true;
         Plugin.Configuration.Save();
